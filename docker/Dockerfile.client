@@ -6,48 +6,47 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # 安装基本系统依赖
 RUN sed -i 's/archive.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list && \
-    sed -i 's/security.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list && \
-    apt-get update && apt-get install -y \
-    curl \
-    gnupg2 \
-    lsb-release \
-    python3-pip \
-    python3-dev \
-    && rm -rf /var/lib/apt/lists/*
+ sed -i 's/security.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list && \
+ apt-get update && apt-get install -y \
+ curl \
+ gnupg2 \
+ lsb-release \
+ python3-pip \
+ python3-dev \
+ && rm -rf /var/lib/apt/lists/*
 
 # 添加ROS 2 apt源
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://mirrors.tuna.tsinghua.edu.cn/ros2/ubuntu jammy main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://mirrors.tuna.tsinghua.edu.cn/ros2/ubuntu jammy main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
 # 安装ROS 2 Humble
-RUN apt-get update && apt-get install -y \
-    ros-humble-desktop \
-    ros-dev-tools \
-    python3-colcon-common-extensions \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+ apt-get install -y --fix-missing \
+ ros-humble-desktop \
+ ros-dev-tools \
+ python3-colcon-common-extensions \
+ && rm -rf /var/lib/apt/lists/*
 
 # 设置ROS环境
 RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
 
 # 安装Python依赖
 RUN python3 -m pip install --no-cache-dir \
-    numpy \
-    -i https://pypi.tuna.tsinghua.edu.cn/simple
+ numpy \
+ -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 创建版本检查脚本
-COPY <<'EOF' /usr/local/bin/check-versions
-#!/bin/bash
-echo "=== System Environment Check ==="
-echo "Python Version:"
-python3 --version
-echo -e "\n=== ROS 2 Version Check ==="
-source /opt/ros/humble/setup.bash
-ros2 --version
-echo -e "\n=== Python Package Version Check ==="
-python3 -c "import numpy; print(f'Numpy Version: {numpy.__version__}')"
-EOF
-
-RUN chmod +x /usr/local/bin/check-versions
+RUN echo '#!/bin/bash\n\
+echo "=== System Environment Check ==="\n\
+echo "Python Version:"\n\
+python3 --version\n\
+echo -e "\\n=== ROS 2 Version Check ==="\n\
+source /opt/ros/humble/setup.bash\n\
+ros2 --version\n\
+echo -e "\\n=== Python Package Version Check ==="\n\
+python3 -c "import numpy; print(f'\''Numpy Version: {numpy.__version__}'\'')"\n\
+' > /usr/local/bin/check-versions && \
+chmod +x /usr/local/bin/check-versions
 
 # 健康检查
 HEALTHCHECK CMD python3 -c "import numpy, rclpy; print('All dependencies installed successfully')" 

@@ -34,12 +34,15 @@
     <!-- ONPs: objects -->
     <body name="box_carton" pos="1.35 0.25 0.742">
       <include file="s2r2025/box_carton.xml"/>
+      <geom pos="0 0 0" size="0.09 0.07 0.003" type="box" rgba="0 0 0 1"/>
     </body>
     <body name="box_disk" pos="0.25 1.35 0.422" quat="0.707 0 0 0.707">
       <include file="s2r2025/box_disk.xml"/>
+      <geom pos="0 0 0" size="0.09 0.07 0.003" type="box" rgba="0 0 0 1"/>
     </body>
     <body name="box_sheet" pos="1.35 0.55 1.062">
       <include file="s2r2025/box_sheet.xml"/>
+      <geom pos="0 0 0" size="0.09 0.07 0.003" type="box" rgba="0 0 0 1"/>
     </body>
 
     <body name="carton_01" pos="1.3 0.25 0.88" quat="1 0 0 0">
@@ -83,14 +86,16 @@
       <joint type="free" frictionloss="0.000001" />
       <inertial pos="0 0 0" mass="0.005" diaginertia="0.00002 0.00002 0.00002" />
       <geom mesh="apple" material="apple_texture" class="obj_visual"/>
-      <geom mesh="apple" class="obj_collision"/>
+      <!-- <geom mesh="apple" class="obj_collision"/> -->
+      <geom pos="0 0 0.03" size="0.03 0.03 0.03" type="box" rgba="0 0 0 1"/>
     </body>
 
     <body name="book" pos="-1 -0.385 0.75" quat="1 0 0 0">
       <joint type="free" frictionloss="0.000001" />
       <inertial pos="0 0 0" mass="0.005" diaginertia="0.00002 0.00002 0.00002" />
       <geom mesh="book" material="book_texture" class="obj_visual"/>
-      <geom mesh="book" class="obj_collision"/>
+      <!-- <geom mesh="book" class="obj_collision"/> -->
+      <geom pos="0 0 0.02" size="0.1 0.08 0.02" type="box" rgba="0 0 0 1"/>
     </body>
 
     <body name="cup" pos="-1 -0.2 0.75" quat="1 0 0 0">
@@ -98,6 +103,7 @@
       <inertial pos="0 0 0" mass="0.005" diaginertia="0.00002 0.00002 0.00002" />
       <geom mesh="cup" material="cup_texture" class="obj_visual"/>
       <geom mesh="cup" class="obj_collision"/>
+      <geom pos="0 0 0.0025" size="0.025 0.025 0.0025" type="box" rgba="0 0 0 1"/>
     </body>
 
     <body name="kettle" pos="-1 0 0.75" quat="1 0 0 0">
@@ -105,6 +111,7 @@
       <inertial pos="0 0 0" mass="0.005" diaginertia="0.00002 0.00002 0.00002" />
       <geom mesh="kettle" material="kettle_texture" class="obj_visual"/>
       <geom mesh="kettle" class="obj_collision"/>
+      <geom pos="0 -0.025 0.01" size="0.05 0.05 0.01" type="box" rgba="0 0 0 1"/>
     </body>
 
     <body name="scissors" pos="-1 0.2 0.75" quat="1 0 0 0">
@@ -119,6 +126,7 @@
       <inertial pos="0 0 0" mass="0.005" diaginertia="0.00002 0.00002 0.00002" />
       <geom mesh="timeclock" material="timeclock_texture" class="obj_visual"/>
       <geom mesh="timeclock" class="obj_collision"/>
+      <geom pos="0 0 0.002" size="0.02 0.02 0.002" type="box" rgba="0 0 0 1"/>
     </body>
 
     <body name="wood" pos="-0.6 -0.7 0.75" quat="1 0 0 0">
@@ -126,13 +134,15 @@
       <inertial pos="0 0 0" mass="0.005" diaginertia="0.00002 0.00002 0.00002" />
       <geom mesh="wood" material="wood_texture" class="obj_visual"/>
       <geom mesh="wood" class="obj_collision"/>
+      <geom pos="0 0 0.0025" size="0.11 0.07 0.0025" type="box" rgba="0 0 0 1"/>
     </body>
 
     <body name="xbox" pos="-0.4 -0.7 0.75" quat="1 0 0 0">
       <joint type="free" frictionloss="0.000001" />
       <inertial pos="0 0 0" mass="0.005" diaginertia="0.00002 0.00002 0.00002" />
       <geom mesh="xbox" material="xbox_texture" class="obj_visual"/>
-      <geom mesh="xbox" class="obj_collision"/>
+      <!-- <geom mesh="xbox" class="obj_collision"/> -->
+      <geom pos="0 0 0.03" size="0.05 0.08 0.03" type="box" rgba="0 0 0 1"/>
     </body>
 
     <body name="yellow_bowl" pos="-0.3 -0.7 0.75" quat="1 0 0 0">
@@ -140,6 +150,7 @@
       <inertial pos="0 0 0" mass="0.005" diaginertia="0.00002 0.00002 0.00002" />
       <geom mesh="yellow_bowl" material="yellow_bowl_texture" class="obj_visual"/>
       <geom mesh="yellow_bowl" class="obj_collision"/>
+      <geom pos="0 0 0.0025" size="0.025 0.025 0.0025" type="box" rgba="0 0 0 1"/>
     </body>
 
     <body name="toy_cabinet" pos="0 -0.9 0.75" quat="0.707 0 0 -0.707">

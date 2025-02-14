@@ -13,17 +13,19 @@ from discoverse.examples.ros2.mmk2_ros2 import MMK2ROS2
 from judgement import TaskInfo, s2r2025_position_info, box_within_cabinet, prop_in_gripper, prop_within_table
 
 import rclpy
+from std_msgs.msg import String
+from rosgraph_msgs.msg import Clock
 
 cfg = MMK2Cfg()
 cfg.mjcf_file_path = "mjcf/s2r2025_env.xml"
-cfg.timestep       = 0.002
-cfg.decimation     = 5
+cfg.timestep       = 0.003
+cfg.decimation     = 2
 
 cfg.init_key = "pick"
 cfg.sync     = True
 cfg.headless = False
 cfg.render_set = {
-    "fps"    : 30,
+    "fps"    : 24,
     "width"  : 640,
     "height" : 480
 }
@@ -75,6 +77,16 @@ class S2RNode(MMK2ROS2):
         # self.options.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = True
         self.round_id = self.config.round_id
 
+        self.clock_publisher_ = self.create_publisher(Clock, '/clock', 10)
+        timer_period = 0.01
+        self.clock_timer = self.create_timer(timer_period, self.timer_callback)
+
+    def timer_callback(self):
+        msg = Clock()
+        msg.clock.sec = int(self.mj_data.time)
+        msg.clock.nanosec = int((self.mj_data.time - int(self.mj_data.time)) * 1e9)
+        self.clock_publisher_.publish(msg)
+
     def post_load_mjcf(self):
         super().post_load_mjcf()
         self.gadgets_info = {}
@@ -99,6 +111,7 @@ class S2RNode(MMK2ROS2):
             self.taskInfos[k].reset()
             if int(k[-1]) < 3:
                 del(self.taskInfos[k].scoring["d"])
+                del(self.taskInfos[k].scoring_time["d"])
 
         while True:
             self.gadgets_choice_ids = np.random.choice(np.arange(0, len(s2r2025_position_info["table"]["position"])), size=len(self.gadgets_names), replace=False)
@@ -211,17 +224,15 @@ class S2RNode(MMK2ROS2):
         print('-' * 100)
         r = f"round{self.round_id}"
         tif = self.taskInfos[r]
-        print(f"{r} : {tif.instruction}")
-        print(f"    target_box_name : {tif.target_box_name}")
-        print(f"    target_prop_name : {tif.target_prop_name}")
+        print(f"{r}: {tif.instruction}")
+        # print(f"    target_box_name : {tif.target_box_name}")
+        # print(f"    target_prop_name : {tif.target_prop_name}")
         return ret
 
     def printScore(self):
         r = f"round{self.round_id}"
         tinfo = self.taskInfos[r]
-        print(f"{r} : {tinfo.instruction}")
-        # print(f"    target_box_name  : {tinfo.target_box_name}")
-        # print(f"    target_prop_name : {tinfo.target_prop_name}")
+        print(f"{r}: {tinfo.instruction}")
         print(f"    scoring : {tinfo.scoring}")
         print(f"    scoring_time : {tinfo.scoring_time}")
 
@@ -234,19 +245,23 @@ class S2RNode(MMK2ROS2):
         if key == glfw.KEY_R:
             key = glfw.KEY_UNKNOWN
         super().on_key(window, key, scancode, action, mods)
-        # if action == glfw.PRESS:
-        #     if key == glfw.KEY_C:
-        #         print(np.array2string(self.mj_data.contact.geom, separator=',', suppress_small=True))
-                
-        #         round_str = f"round{self.round_id}"
-        #         prop_name = self.taskInfos[round_str].target_prop_name
+        if action == glfw.PRESS:
+            if key == glfw.KEY_C:
+                # self.pubContactInfoOnce()
+                pass
 
-        #         for bd in [prop_name, "lft_finger_left_link", "lft_finger_right_link", "rgt_finger_left_link", "rgt_finger_right_link"]:
-        #             bd_gemo_id_range = (self.mj_model.body(bd).geomadr[0], self.mj_model.body(bd).geomadr[0]+self.mj_model.body(bd).geomnum[0])
-        #             print(bd, bd_gemo_id_range)
+    def pubContactInfoOnce(self):
+        print(np.array2string(self.mj_data.contact.geom, separator=',', suppress_small=True))
+        
+        round_str = f"round{self.round_id}"
+        prop_name = self.taskInfos[round_str].target_prop_name
 
-        #         print(self.check_contact(prop_name, "lft_finger_right_link"), self.check_contact(prop_name, "lft_finger_left_link"))
-        #         print(self.check_contact(prop_name, "rgt_finger_right_link"), self.check_contact(prop_name, "rgt_finger_left_link"))
+        for bd in [prop_name, "lft_finger_left_link", "lft_finger_right_link", "rgt_finger_left_link", "rgt_finger_right_link"]:
+            bd_gemo_id_range = (self.mj_model.body(bd).geomadr[0], self.mj_model.body(bd).geomadr[0]+self.mj_model.body(bd).geomnum[0])
+            print(bd, bd_gemo_id_range)
+
+        print(self.check_contact(prop_name, "lft_finger_right_link"), self.check_contact(prop_name, "lft_finger_left_link"))
+        print(self.check_contact(prop_name, "rgt_finger_right_link"), self.check_contact(prop_name, "rgt_finger_left_link"))
 
     def check_contact(self, body1, body2):
         body1_gemo_id_range = (self.mj_model.body(body1).geomadr[0], self.mj_model.body(body1).geomadr[0]+self.mj_model.body(body1).geomnum[0])
@@ -261,6 +276,9 @@ class S2RNode(MMK2ROS2):
         return False
 
     def post_physics_step(self):
+        self.free_camera.distance = min(self.free_camera.distance, 2.)
+        self.free_camera.lookat[:] = np.clip(self.free_camera.lookat[:], np.array([-2.,-2.,0.]), np.array([2.,2.,2.]))
+
         round_str = f"round{self.round_id}"
 
         box_posi = self.mj_data.qpos[self.taskInfos[round_str].target_box_qpos_id:self.taskInfos[round_str].target_box_qpos_id+3]
@@ -369,6 +387,73 @@ class S2RNode(MMK2ROS2):
             pass
         return mission_done
 
+    def thread_pubGameInfo(self, freq=1):
+        rate1 = self.create_rate(freq)
+        r = f"round{self.round_id}"
+        tinfo = self.taskInfos[r]
+
+        self.task_info_puber = self.create_publisher(String, '/s2r2025/taskinfo', 2)
+        task_info_msg = String()
+        task_info_msg.data = f"{r}: {tinfo.instruction}"
+
+        self.game_info_puber = self.create_publisher(String, '/s2r2025/gameinfo', 2)
+        game_info_msg = String()
+
+        while rclpy.ok() and self.running:
+            game_info_msg.data = str({
+                "scoring" : tinfo.scoring,
+                "scoring_time" : tinfo.scoring_time,
+            })
+            self.task_info_puber.publish(task_info_msg)
+            self.game_info_puber.publish(game_info_msg)
+            rate1.sleep()
+
+    def pubRos2TopicOnce(self):
+        time_stamp = self.get_clock().now().to_msg()
+        self.joint_state.header.stamp = time_stamp
+        self.joint_state.position = self.sensor_qpos[2:].tolist()
+        self.joint_state.velocity = self.sensor_qvel[2:].tolist()
+        self.joint_state.effort = self.sensor_force[2:].tolist()
+        self.joint_state_puber.publish(self.joint_state)
+
+        self.odom_msg.pose.pose.position.x = self.sensor_base_position[0]
+        self.odom_msg.pose.pose.position.y = self.sensor_base_position[1]
+        self.odom_msg.pose.pose.position.z = self.sensor_base_position[2]
+        self.odom_msg.pose.pose.orientation.w = self.sensor_base_orientation[0]
+        self.odom_msg.pose.pose.orientation.x = self.sensor_base_orientation[1]
+        self.odom_msg.pose.pose.orientation.y = self.sensor_base_orientation[2]
+        self.odom_msg.pose.pose.orientation.z = self.sensor_base_orientation[3]
+        self.odom_puber.publish(self.odom_msg)
+
+        head_color_img_msg = self.bridge.cv2_to_imgmsg(self.obs["img"][0], encoding="rgb8")
+        head_color_img_msg.header.stamp = time_stamp
+        head_color_img_msg.header.frame_id = "head_camera"
+        self.head_color_puber.publish(head_color_img_msg)
+
+        head_depth_img = np.array(np.clip(self.obs["depth"][0]*1e3, 0, 65535), dtype=np.uint16)
+        head_depth_img_msg = self.bridge.cv2_to_imgmsg(head_depth_img, encoding="mono16")
+        head_depth_img_msg.header.stamp = time_stamp
+        head_depth_img_msg.header.frame_id = "head_camera"
+        self.head_depth_puber.publish(head_depth_img_msg)
+        
+        left_color_img_msg = self.bridge.cv2_to_imgmsg(self.obs["img"][1], encoding="rgb8")
+        left_color_img_msg.header.stamp = time_stamp
+        left_color_img_msg.header.frame_id = "left_camera"
+        self.left_color_puber.publish(left_color_img_msg)
+
+        right_color_img_msg = self.bridge.cv2_to_imgmsg(self.obs["img"][2], encoding="rgb8")
+        right_color_img_msg.header.stamp = time_stamp
+        right_color_img_msg.header.frame_id = "right_camera"
+        self.right_color_puber.publish(right_color_img_msg)
+    
+    # def render(self):
+    #     super().render()
+    #     try:
+    #         pass
+    #         # self.pubRos2TopicOnce()
+    #     except Exception as e:
+    #         traceback.print_exc()
+
 if __name__ == "__main__":
     rclpy.init()
     np.set_printoptions(precision=3, suppress=True, linewidth=200)
@@ -389,8 +474,11 @@ if __name__ == "__main__":
     spin_thread = threading.Thread(target=lambda:rclpy.spin(sim_node))
     spin_thread.start()
 
-    pubtopic_thread = threading.Thread(target=sim_node.thread_pubros2topic, args=(30,))
+    pubtopic_thread = threading.Thread(target=sim_node.thread_pubros2topic, args=(24,))
     pubtopic_thread.start()
+
+    pubgameinfo_thread = threading.Thread(target=sim_node.thread_pubGameInfo)
+    pubgameinfo_thread.start()
 
     try:
         while rclpy.ok() and sim_node.running:
@@ -405,6 +493,7 @@ if __name__ == "__main__":
 
     finally:
         pubtopic_thread.join()
+        pubgameinfo_thread.join()
         sim_node.destroy_node()
         rclpy.shutdown()
         spin_thread.join()
