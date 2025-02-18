@@ -5,38 +5,77 @@
 ### Clone DISCOVERSE
 
 ```bash
-mkdir S2R_ws
+mkdir S2R_ws && cd S2R_ws
 git clone https://github.com/TATP-233/DISCOVERSE.git --recursive
 git clone https://github.com/DISCOVER-Robotics/SIM2REAL-2025.git
-cd DISCOVERSE
-git checkout s2r2025
+cd DISCOVERSE && git checkout s2r2025
+```
+
+### 安装docker
+
+若本地尚未安装docker：
+
+```bash
+cd S2R_ws/SIM2REAL-2025/scripts
+bash docker_install.sh
+```
+
+验证docker安装：
+
+```bash
+docker --version
+```
+
+安装参考链接，[docker install](https://docs.docker.com/engine/install/ubuntu/)。
+
+### 安装nvidia driver
+
+推荐使用Software & Updates中Additional Drivers安装，创建镜像和容器前需要检查宿主机的显卡驱动是否正常。
+
+打开终端，输入nvidia-smi检查驱动是否安装成功。
+
+安装 nvidia-docker2
+
+```bash
+sudo systemctl --now enable docker
+
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID) \
+   && curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add - \
+   && curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+   
+sudo apt-get update
+sudo apt-get install -y nvidia-docker2
+sudo systemctl restart docker
+```
+
+### 注册 dockerhub
+
+注册dockerhub账号：[dockerhub](https://hub.docker.com/)
+
+登录dockerhub账号
+
+```bash
+docker login
 ```
 
 ### Build server
 
 >   ❗️ <PATH-TO-S2R_ws> 要换成本地`S2R_ws`的绝对路径，例如`/home/xxx/ws/S2R_ws`
 
+使用docker file构建docker image：
+
 ```bash
 cd S2R_ws/SIM2REAL-2025/docker
 docker build -f Dockerfile.server -t discoverse:s2r_server <PATH-TO-S2R_ws>
+```
 
-cd S2R_ws
-docker run -dit \
-    --name s2r_server \
-    --gpus all \
-    --privileged=true \
-    --network=host \
-    --ipc=host \
-    --pid=host \
-    -e ROS_DOMAIN_ID=99 \
-    -e ROS_LOCALHOST_ONLY=0 \
-    -e DISPLAY=$DISPLAY \
-    -e QT_X11_NO_MITSHM=1 \
-    -e NVIDIA_DRIVER_CAPABILITIES=all \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -v /dev/input:/dev/input \
-    -v $(pwd):/workspace \
-    discoverse:s2r_server bash
+因为镜像文件较大，需等待较长时间，如果因为网络原因构建失败，请配置代理或者使用镜像加速器。
+
+创建server docker container：
+
+```bash
+cd SIM2REAL-2025/scripts
+bash create_container_server.sh
 ```
 
 ### Build client
@@ -214,3 +253,14 @@ Subscribed topics:
 请参考`SIM2REAL-2025/s2r2025/joy_control_test.py` `Ros2JoyCtl`中的`teleopProcess`方法。
 
 机器人的urdf和mesh可在`SIM2REAL-2025/models/mmk2_model`找到。
+
+# 上传client镜像
+
+选手在client中开发算法，开发完成后打包上传至docker hub，由官方拉取后进行测试，测试使用电脑配置为：
+
+```
+cpu : 13th Gen Intel Core i7013700KF x24
+gpu : GeForce RTX 4090 24G
+Memory : 64GB
+```
+

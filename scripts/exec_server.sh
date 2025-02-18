@@ -1,0 +1,1 @@
+docker exec -it s2r_server bash

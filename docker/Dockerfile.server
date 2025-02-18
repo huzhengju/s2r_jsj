@@ -111,7 +111,7 @@ WORKDIR /workspace/DISCOVERSE/submodules/diff-gaussian-rasterization
 RUN python3 -m pip install --upgrade "setuptools<66.0.0" && \
     pip install .
 
-# Install diff-gaussian-rasterization
+# Install discoverse
 WORKDIR /workspace/DISCOVERSE
 RUN pip install .
 
