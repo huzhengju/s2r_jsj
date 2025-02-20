@@ -1,5 +1,5 @@
 # Use NVIDIA CUDA base image
-FROM nvidia/cuda:12.4.0-devel-ubuntu22.04
+FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -81,7 +81,7 @@ RUN apt-get update && \
     torch \
     torchvision \
     torchaudio \
-    --index-url https://download.pytorch.org/whl/cu124
+    --index-url https://download.pytorch.org/whl/cu121
 
 # Install base dependencies, numpy1.26.3 supports python3.8-3.11
 RUN python3 -m pip install --no-cache-dir \
@@ -103,8 +103,11 @@ RUN python3 -m pip install --no-cache-dir \
 # Set CUDA architecture (supports RTX 30/40 series)
 ENV TORCH_CUDA_ARCH_LIST="7.0 7.5 8.0 8.6 8.9 9.0+PTX"
 
-# Copy submodule code
-COPY DISCOVERSE/submodules/diff-gaussian-rasterization /workspace/DISCOVERSE/submodules/diff-gaussian-rasterization
+# Copy DISCOVERSE
+COPY DISCOVERSE /workspace/DISCOVERSE
+
+# Copy DISCOVERSE
+COPY SIM2REAL-2025 /workspace/SIM2REAL-2025
 
 # Install diff-gaussian-rasterization
 WORKDIR /workspace/DISCOVERSE/submodules/diff-gaussian-rasterization
@@ -113,7 +116,7 @@ RUN python3 -m pip install --upgrade "setuptools<66.0.0" && \
 
 # Install discoverse
 WORKDIR /workspace/DISCOVERSE
-RUN pip install .
+RUN pip install -e .
 
 # Return to working directory
 WORKDIR /workspace

@@ -1,6 +1,6 @@
-docker rm -f s2r2025_server
+docker rm -f s2r2025_client
 
-docker run -id --name s2r2025_server --gpus all \
+docker run -id --name s2r2025_client --gpus all \
     --privileged=true \
     --network=host \
     --ipc=host \
@@ -11,7 +11,8 @@ docker run -id --name s2r2025_server --gpus all \
     -e QT_X11_NO_MITSHM=1 \
     -e NVIDIA_DRIVER_CAPABILITIES=all \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -v /dev/input:/dev/input \
-    discoverse/s2r2025_server:v1.0 bash
+    discoverse/s2r_client:v1.0 bash
+    
+    # discoverse/s2r2025_client:example_tag bash
 
 xhost +

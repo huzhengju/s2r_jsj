@@ -1,1 +1,1 @@
-docker exec -it s2r_server bash
+docker exec -it s2r2025_server bash

@@ -1,16 +1,5 @@
 ## Installation
 
->   ❗️ 请严格按照步骤操作
-
-### Clone DISCOVERSE
-
-```bash
-mkdir S2R_ws && cd S2R_ws
-git clone https://github.com/TATP-233/DISCOVERSE.git --recursive
-git clone https://github.com/DISCOVER-Robotics/SIM2REAL-2025.git
-cd DISCOVERSE && git checkout s2r2025
-```
-
 ### 安装docker
 
 若本地尚未安装docker：
@@ -60,39 +49,116 @@ docker login
 
 ### Build server
 
+我们提供了两种方案供选手在本地运行仿真环境
+
+#### 从docker hub拉取镜像
+
+```bash
+docker pull discoverse/s2r2025_server:v1.0
+```
+
+#### 使用docker file 本地构建镜像
+
 >   ❗️ <PATH-TO-S2R_ws> 要换成本地`S2R_ws`的绝对路径，例如`/home/xxx/ws/S2R_ws`
+>   
+>   ❗️ 请严格按照步骤操作
+
+Clone DISCOVERSE
+```bash
+mkdir S2R_ws && cd S2R_ws
+git clone https://github.com/DISCOVER-Robotics/SIM2REAL-2025.git
+git clone https://github.com/TATP-233/DISCOVERSE.git --recursive
+cd DISCOVERSE && git checkout s2r2025
+```
 
 使用docker file构建docker image：
 
 ```bash
 cd S2R_ws/SIM2REAL-2025/docker
-docker build -f Dockerfile.server -t discoverse:s2r_server <PATH-TO-S2R_ws>
+docker build -f Dockerfile.server -t discoverse/s2r2025_server:v1.0 <PATH-TO-S2R_ws>
 ```
 
 因为镜像文件较大，需等待较长时间，如果因为网络原因构建失败，请配置代理或者使用镜像加速器。
 
-创建server docker container：
+### Run server container
+
+打开`create_container_server.sh`并修改镜像 和 tag名称
+
+![image-20250220182628666](./assets/image-20250220182628666.png)
+
+创建server container：
 
 ```bash
 cd SIM2REAL-2025/scripts
 bash create_container_server.sh
 ```
 
+终端中进入server container：
+
+```bash
+cd SIM2REAL-2025/scripts
+bash exec_server.sh
+```
+
+电脑重启后，需要重新启动容器
+
+```bash
+docker start s2r2025_server
+```
+
+❗️ 若后续比赛有内容更新，请进入容器中更新
+
+```bash
+cd SIM2REAL-2025/scripts && bash exec_server.sh
+cd SIM2REAL-2025
+git pull
+```
+
+启动比赛。进入server 容器的终端：
+
+```bash
+cd /workspace/SIM2REAL-2025/s2r2025
+python3 s2r_server.py --round_id 1
+# round_id 为 [1、2、3] 对应比赛的轮数
+```
+
 ### Build client
+
+和server一样，选手可以通过直接拉取远程镜像或使用docker file构建两种方式来在本地构建client docker镜像。
+
+#### 从 docker hub 拉取镜像 
+
+```bash
+docker pull discoverse/
+```
+
+#### 从docker file本地构建镜像
 
 >   ❗️ <YOUR-TEAM-NAME>:<TAG>要替换成参赛队伍名和TAG，例如 `team_A:v1`
 
 ```bash
 cd S2R_ws/SIM2REAL-2025/docker
 docker build -f Dockerfile.client -t <YOUR-TEAM-NAME>:<TAG> .
+```
 
-docker run -dit \
-    --network=host \
-    --ipc=host \
-    --pid=host \
-    -e ROS_DOMAIN_ID=99 \
-    -e ROS_LOCALHOST_ONLY=0 \
-    <YOUR-TEAM-NAME>:<TAG> bash
+### Run client container
+
+打开`create_container_client.sh`并修改镜像 和 tag名称
+
+![image-20250220183826214](./assets/image-20250220183826214.png)
+
+创建client container：
+
+```bash
+cd SIM2REAL-2025/scripts
+bash create_container_client.sh
+```
+
+终端中进入client container：
+
+```bash
+cd SIM2REAL-2025/scripts
+bash exec_client.sh
 ```
 
 ### Test ros2 communication
@@ -102,7 +168,7 @@ docker run -dit \
 ```bash
 # server --> client 通信测试
 (new terminal)
-docker exec -it s2r_server bash
+docker exec -it s2r2025_server bash
 ros2 topic pub /server_test std_msgs/msg/String "data: 'hello from server'"
 
 (new terminal)
@@ -120,7 +186,7 @@ docker exec -it <CLIENT_CONTAINER_ID> bash
 ros2 topic pub /client_test std_msgs/msg/String "data: 'hello from client'"
 
 (new terminal)
-docker exec -it s2r_server bash
+docker exec -it s2r2025_server bash
 # 测试订阅server发布的消息
 ros2 topic echo /client_test
 ```
@@ -131,19 +197,19 @@ MMK2（Mobile Manipulation Kit 2）是本次比赛使用的机器人平台，MMK
 
 ```bash
 (new terminal) # 启动比赛
-docker exec -it s2r_server bash
+docker exec -it s2r2025_server bash
 cd /workspace/SIM2REAL-2025/s2r2025
 python3 s2r_server.py --round_id 1
 
-(new terminal) 
-docker exec -it s2r_server bash
+(new terminal)
+docker exec -it s2r2025_server bash
 # 需要先连接手柄
 # ls /dev/input/ | grep js
 # 如果有js0则说明已经在container中识别到了手柄
 ros2 run joy joy_node
 
 (new terminal) 
-docker exec -it s2r_server bash
+docker exec -it s2r2025_server bash
 cd /workspace/SIM2REAL-2025/s2r2025
 # 如果是Logitech类手柄，将/workspace/SIM2REAL-2025/s2r2025/joy_control_test.py
 # line 14 `NUM_BUTTON=12` 改成 `NUM_BUTTON=11`
@@ -197,12 +263,20 @@ python3 joy_control_test.py
 Published topics:
  * /clock [rosgraph_msgs/msg/Clock] 1 publisher
 	# 仿真时钟
+ * /mmk2/head_camera/aligned_depth_to_color/camera_info [sensor_msgs/msg/CameraInfo] 1 publisher
+ 	# mmk2机器人头部深度相机 内参
  * /mmk2/head_camera/aligned_depth_to_color/image_raw [sensor_msgs/msg/Image] 1 publisher
  	# mmk2机器人头部相机的深度图像，和rgb图像对齐，编码格式为mono16，单位毫米
+ * /mmk2/head_camera/color/camera_info [sensor_msgs/msg/CameraInfo] 1 publisher
+ 	# mmk2机器人头部rgb相机 内参
  * /mmk2/head_camera/color/image_raw [sensor_msgs/msg/Image] 1 publisher
  	# mmk2机器人头部相机的rgb图像，编码格式rgb8
+ * /mmk2/left_camera/color/camera_info [sensor_msgs/msg/CameraInfo] 1 publisher
+ 	# mmk2机器人左手rgb相机 内参
  * /mmk2/left_camera/color/image_raw [sensor_msgs/msg/Image] 1 publisher
  	# mmk2机器人左侧手臂末端相机的rgb图像，编码格式rgb8
+ * /mmk2/right_camera/color/camera_info [sensor_msgs/msg/CameraInfo] 1 publisher
+ 	# mmk2机器人右手rgb相机 内参
  * /mmk2/right_camera/color/image_raw [sensor_msgs/msg/Image] 1 publisher
  	# mmk2机器人右侧手臂末端相机的rgb图像，编码格式rgb8
  * /mmk2/odom [nav_msgs/msg/Odometry] 1 publisher
@@ -254,7 +328,7 @@ Subscribed topics:
 
 机器人的urdf和mesh可在`SIM2REAL-2025/models/mmk2_model`找到。
 
-# 上传client镜像
+## 上传client镜像
 
 选手在client中开发算法，开发完成后打包上传至docker hub，由官方拉取后进行测试，测试使用电脑配置为：
 
@@ -264,3 +338,71 @@ gpu : GeForce RTX 4090 24G
 Memory : 64GB
 ```
 
+### 1. 新建privtate repo
+
+参赛队伍在自己注册的dockerhub上新建一个private repo，名字为s2r2025
+
+![create_repo](./assets/pNvARLcZYA.jpg)
+
+![alt text](./assets/X97p0EfBJl.jpg)
+
+### 2. 将client镜像push到private repo
+
+将client镜像打上tag(tag名称，参赛队伍可以自定义)，dockerhub_name为dcokerhub的账号名字
+```
+docker tag s2r2025/client:v1.0 dockerhub_name/s2r2025:example_tag
+```
+![change_docker_tag](./assets/jb9FSWVRH7.jpg)
+
+将新tag的client镜像push到private repo
+```
+docker push dockerhub_name/s2r2025:example_tag
+```
+
+![docker_push](./assets/img_v3_02jm_78566d0a-7803-4e17-b656-d94e49f9de5g.png)
+
+### 3. 开发比赛任务
+
+根据private repo和tag名字，修改create_containner_client.sh里的镜像名和tag
+
+![image-20250220181043385](./assets/image-20250220181043385.png)
+
+运行create_client.sh，创建新容器。
+
+运行exec_client.sh脚本，进入客户端镜像终端开始进行开发工作。
+
+强烈推荐使用 Git 工具进行代码版本管理，以确保代码的安全性和可追溯性。
+
+在 Docker 环境中，您也可以通过 Visual Studio Code（VS Code）安装docker插件 进行高效开发。
+
+### 4. docker commit
+
+本地保存镜像修改内容，使用原有的tag会覆盖之前tag版本的内容
+```
+docker commit s2r2025_client dockerhub_name/s2r2025:new_tag
+```
+
+![image-20250220181624907](./assets/image-20250220181624907.png)
+
+### 5. docker push
+
+通过docker push到private repo保存当前docker镜像到dockerhub
+```
+docker push dockerhub_name/sim2real-2025:example_tag
+```
+
+![image-20250220181914426](./assets/image-20250220181914426.png)
+
+### 6. 生成访问token
+
+参考连接：[docker token](https://docs.docker.com/docker-hub/access-tokens/)
+
+在需要提交测试的版本时，将dockerhub用户名、docker token由比赛系统提交。
+
+![enter_account_setting](./assets/Nztwu0CBuC.jpg)
+
+![create_token_pos](./assets/qVzLzJz5hb.jpg)
+
+![create_token](./assets/atg7LUeWtU.jpg)
+
+![token_created](./assets/wy3IGQMrK6.jpg)
