@@ -1,5 +1,5 @@
-# 使用Ubuntu 22.04作为基础镜像
-FROM ubuntu:22.04
+# Use NVIDIA CUDA base image
+FROM nvidia/cuda:11.8.0-devel-ubuntu22.04
 
 # 设置环境变量
 ENV DEBIAN_FRONTEND=noninteractive
@@ -50,28 +50,3 @@ chmod +x /usr/local/bin/check-versions
 
 # 健康检查
 HEALTHCHECK CMD python3 -c "import numpy, rclpy; print('All dependencies installed successfully')" 
-
-# # 构建client镜像
-# docker build -t discoverse-client -f Dockerfile.client .
-
-# # 运行client容器
-# docker run -it --rm \
-#     --network=host \
-#     -e ROS_DOMAIN_ID=0 \
-#     -e ROS_LOCALHOST_ONLY=0 \
-#     -v $(pwd):/workspace \
-#     discoverse-client bash
-
-# client容器中发布通信测试
-# source /opt/ros/humble/setup.bash
-# ros2 topic pub /test2 std_msgs/msg/String "data: 'hello from client'"
-
-# 查看所有活动的topics
-# ros2 topic list
-
-# 查看详细信息
-# ros2 topic info /test1
-# ros2 topic info /test2
-
-# 查看topic类型
-# ros2 interface show std_msgs/msg/String
