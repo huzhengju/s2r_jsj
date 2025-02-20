@@ -49,7 +49,14 @@ docker login
 
 ### Build server
 
-我们提供了两种方案供选手在本地运行仿真环境
+我们提供了两种方案供选手在本地运行仿真环境。
+
+环境依赖：
+
++   ubuntu >= 20.04
++   cuda >= 11.8
++   显存 >= 6GB
++   空余硬盘空间 >= 80G
 
 #### 从docker hub拉取镜像
 
@@ -59,8 +66,6 @@ docker pull discoverse/s2r2025_server:v1.0
 
 #### 使用docker file 本地构建镜像
 
->   ❗️ <PATH-TO-S2R_ws> 要换成本地`S2R_ws`的绝对路径，例如`/home/xxx/ws/S2R_ws`
->   
 >   ❗️ 请严格按照步骤操作
 
 Clone DISCOVERSE
@@ -73,6 +78,8 @@ cd DISCOVERSE && git checkout s2r2025
 
 使用docker file构建docker image：
 
+>   ❗️ <PATH-TO-S2R_ws> 要换成本地`S2R_ws`的绝对路径，例如`/home/xxx/ws/S2R_ws`
+
 ```bash
 cd S2R_ws/SIM2REAL-2025/docker
 docker build -f Dockerfile.server -t discoverse/s2r2025_server:v1.0 <PATH-TO-S2R_ws>
@@ -82,9 +89,9 @@ docker build -f Dockerfile.server -t discoverse/s2r2025_server:v1.0 <PATH-TO-S2R
 
 ### Run server container
 
-打开`create_container_server.sh`并修改镜像 和 tag名称
+打开`scripts/create_container_server.sh`并修改镜像 和 tag名称
 
-![image-20250220182628666](./assets/image-20250220182628666.png)
+![image-20250220193041501](./assets/image-20250220193041501.png)
 
 创建server container：
 
@@ -145,7 +152,7 @@ docker build -f Dockerfile.client -t <YOUR-TEAM-NAME>:<TAG> .
 
 打开`create_container_client.sh`并修改镜像 和 tag名称
 
-![image-20250220183826214](./assets/image-20250220183826214.png)
+![image-20250220211718735](./assets/image-20250220211718735.png)
 
 创建client container：
 
@@ -388,7 +395,7 @@ docker commit s2r2025_client dockerhub_name/s2r2025:new_tag
 
 通过docker push到private repo保存当前docker镜像到dockerhub
 ```
-docker push dockerhub_name/sim2real-2025:example_tag
+docker push dockerhub_name/s2r2025:example_tag
 ```
 
 ![image-20250220181914426](./assets/image-20250220181914426.png)

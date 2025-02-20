@@ -15,3 +15,4 @@ docker run -id --name s2r2025_server --gpus all \
     discoverse/s2r2025_server:v1.0 bash
 
 xhost +
+

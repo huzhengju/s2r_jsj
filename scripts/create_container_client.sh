@@ -11,8 +11,7 @@ docker run -id --name s2r2025_client --gpus all \
     -e QT_X11_NO_MITSHM=1 \
     -e NVIDIA_DRIVER_CAPABILITIES=all \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
-    discoverse/s2r_client:v1.0 bash
-    
-    # discoverse/s2r2025_client:example_tag bash
+    discoverse/s2r2025_client:example_tag bash
 
 xhost +
+
