@@ -12,8 +12,9 @@ from discoverse.envs.mmk2_base import MMK2Cfg
 from discoverse.examples.ros2.mmk2_ros2 import MMK2ROS2
 from judgement import TaskInfo, s2r2025_position_info, box_within_cabinet, prop_in_gripper, prop_within_table
 
-import rclpy
-from std_msgs.msg import String
+import rclpy 
+from std_msgs.msg import String, Float64MultiArray
+from geometry_msgs.msg import Twist
 from rosgraph_msgs.msg import Clock
 
 cfg = MMK2Cfg()
@@ -32,6 +33,7 @@ cfg.render_set = {
 cfg.obj_list = [
     "box_carton" , "box_disk"    , "box_sheet"     ,
     "carton_01"  , "disk_01"     , "sheet_01"      ,
+    "disk_02"    , "sheet_02"    ,
     "apple"      , "book"        , "cup"           ,
     "kettle"     , "scissors"    , "timeclock"     ,
     "wood"       , "xbox"        , "yellow_bowl"   ,
@@ -44,7 +46,9 @@ cfg.gs_model_dict["box_disk"]       = "s2r2025/box.ply"
 cfg.gs_model_dict["box_sheet"]      = "s2r2025/box.ply"
 cfg.gs_model_dict["carton_01"]      = "s2r2025/carton_01.ply"
 cfg.gs_model_dict["disk_01"]        = "s2r2025/disk_01.ply"
+cfg.gs_model_dict["disk_02"]        = "s2r2025/disk_01.ply"
 cfg.gs_model_dict["sheet_01"]       = "s2r2025/sheet_01.ply"
+cfg.gs_model_dict["sheet_02"]       = "s2r2025/sheet_01.ply"
 cfg.gs_model_dict["apple"]          = "s2r2025/apple.ply"
 cfg.gs_model_dict["book"]           = "s2r2025/book.ply"
 cfg.gs_model_dict["cup"]            = "s2r2025/cup.ply"
@@ -76,10 +80,42 @@ class S2RNode(MMK2ROS2):
         # self.options.flags[mujoco.mjtVisFlag.mjVIS_TRANSPARENT] = True
         # self.options.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = True
         self.round_id = self.config.round_id
+        self.first_recv_cmd_time = -1.
+        self.cmd_recv_lock = threading.Lock()
 
         self.clock_publisher_ = self.create_publisher(Clock, '/clock', 10)
         timer_period = 0.01
-        self.clock_timer = self.create_timer(timer_period, self.timer_callback)
+        self.clock_timer = self.create_timer(timer_period, self.timer_callback)                
+
+    def cmd_vel_callback(self, msg: Twist):
+        with self.cmd_recv_lock:
+            if self.first_recv_cmd_time < 0.:
+                self.first_recv_cmd_time = self.mj_data.time
+        super().cmd_vel_callback(msg)
+
+    def cmd_spine_callback(self, msg: Float64MultiArray):
+        with self.cmd_recv_lock:
+            if self.first_recv_cmd_time < 0.:
+                self.first_recv_cmd_time = self.mj_data.time
+        super().cmd_spine_callback(msg)
+
+    def cmd_head_callback(self, msg: Float64MultiArray):
+        with self.cmd_recv_lock:
+            if self.first_recv_cmd_time < 0.:
+                self.first_recv_cmd_time = self.mj_data.time
+        super().cmd_head_callback(msg)
+
+    def cmd_left_arm_callback(self, msg: Float64MultiArray):
+        with self.cmd_recv_lock:
+            if self.first_recv_cmd_time < 0.:
+                self.first_recv_cmd_time = self.mj_data.time
+        super().cmd_left_arm_callback(msg)
+
+    def cmd_right_arm_callback(self, msg: Float64MultiArray):
+        with self.cmd_recv_lock:
+            if self.first_recv_cmd_time < 0.:
+                self.first_recv_cmd_time = self.mj_data.time
+        super().cmd_right_arm_callback(msg)
 
     def timer_callback(self):
         msg = Clock()
@@ -294,8 +330,8 @@ class S2RNode(MMK2ROS2):
                 if (self.check_contact(box_name, "lft_finger_right_link") or self.check_contact(box_name, "lft_finger_left_link")) and \
                     (self.check_contact(box_name, "rgt_finger_right_link") or self.check_contact(box_name, "rgt_finger_left_link")):
                     self.taskInfos[round_str].scoring["a"] = True
-                    self.taskInfos[round_str].scoring_time["a"] = self.mj_data.time
-                    print(f">>> {round_str} scoring : 'a' done at {self.mj_data.time}s\n")
+                    self.taskInfos[round_str].scoring_time["a"] = self.mj_data.time - self.first_recv_cmd_time
+                    print(f">>> {round_str} scoring : 'a' done at {self.mj_data.time - self.first_recv_cmd_time}s\n")
 
             if not self.taskInfos[round_str].scoring["b"]:
                 if prop_in_gripper(self.mj_data.body("lft_finger_left_link").xpos, self.mj_data.body("lft_finger_right_link").xpos, prop_posi, self.taskInfos[round_str].target_prop_type) \
@@ -303,24 +339,24 @@ class S2RNode(MMK2ROS2):
                     if (self.check_contact(prop_name, "lft_finger_right_link") and self.check_contact(prop_name, "lft_finger_left_link")) \
                         or (self.check_contact(prop_name, "rgt_finger_right_link") and self.check_contact(prop_name, "rgt_finger_left_link")):
                         self.taskInfos[round_str].scoring["b"] = True
-                        self.taskInfos[round_str].scoring_time["b"] = self.mj_data.time
-                        print(f">>> {round_str} scoring : 'b' done at {self.mj_data.time}s\n")
+                        self.taskInfos[round_str].scoring_time["b"] = self.mj_data.time - self.first_recv_cmd_time
+                        print(f">>> {round_str} scoring : 'b' done at {self.mj_data.time - self.first_recv_cmd_time}s\n")
 
             if self.taskInfos[round_str].scoring["a"] and self.taskInfos[round_str].scoring["b"] and not self.taskInfos[round_str].scoring["c"]:
                 if (not self.check_contact(prop_name, "lft_finger_right_link")) and (not self.check_contact(prop_name, "lft_finger_left_link")) and \
                     (not self.check_contact(prop_name, "rgt_finger_right_link")) and (not self.check_contact(prop_name, "rgt_finger_left_link")):
                     if prop_within_table(prop_posi, self.taskInfos[round_str].table_direction) and self.check_contact(prop_name, self.taskInfos[round_str].table_direction+"_table") and prop_posi[2] > 0.75:
                         self.taskInfos[round_str].scoring["c"] = True
-                        self.taskInfos[round_str].scoring_time["c"] = self.mj_data.time
-                        print(f">>> {round_str} scoring : 'c' done at {self.mj_data.time}s\n")
+                        self.taskInfos[round_str].scoring_time["c"] = self.mj_data.time - self.first_recv_cmd_time
+                        print(f">>> {round_str} scoring : 'c' done at {self.mj_data.time - self.first_recv_cmd_time}s\n")
 
         elif self.round_id == 2:
             if not self.taskInfos[round_str].scoring["a"] and not box_within_cabinet(box_posi):
                 if (self.check_contact(box_name, "lft_finger_right_link") or self.check_contact(box_name, "lft_finger_left_link")) and \
                     (self.check_contact(box_name, "rgt_finger_right_link") or self.check_contact(box_name, "rgt_finger_left_link")):
                     self.taskInfos[round_str].scoring["a"] = True
-                    self.taskInfos[round_str].scoring_time["a"] = self.mj_data.time
-                    print(f">>> {round_str} scoring : 'a' done at {self.mj_data.time}s\n")
+                    self.taskInfos[round_str].scoring_time["a"] = self.mj_data.time - self.first_recv_cmd_time
+                    print(f">>> {round_str} scoring : 'a' done at {self.mj_data.time - self.first_recv_cmd_time}s\n")
 
             if not self.taskInfos[round_str].scoring["b"]:
                 if prop_in_gripper(self.mj_data.body("lft_finger_left_link").xpos, self.mj_data.body("lft_finger_right_link").xpos, prop_posi, self.taskInfos[round_str].target_prop_type) \
@@ -328,8 +364,8 @@ class S2RNode(MMK2ROS2):
                     if (self.check_contact(prop_name, "lft_finger_right_link") and self.check_contact(prop_name, "lft_finger_left_link")) \
                         or (self.check_contact(prop_name, "rgt_finger_right_link") and self.check_contact(prop_name, "rgt_finger_left_link")):
                         self.taskInfos[round_str].scoring["b"] = True
-                        self.taskInfos[round_str].scoring_time["b"] = self.mj_data.time
-                        print(f">>> {round_str} scoring : 'b' done at {self.mj_data.time}s\n")
+                        self.taskInfos[round_str].scoring_time["b"] = self.mj_data.time - self.first_recv_cmd_time
+                        print(f">>> {round_str} scoring : 'b' done at {self.mj_data.time - self.first_recv_cmd_time}s\n")
 
             if not self.taskInfos[round_str].scoring["c"] and self.taskInfos[round_str].scoring["a"] and self.taskInfos[round_str].scoring["b"]:
                 if (not self.check_contact(prop_name, "lft_finger_right_link")) and (not self.check_contact(prop_name, "lft_finger_left_link")) and \
@@ -338,16 +374,16 @@ class S2RNode(MMK2ROS2):
                         (prop_within_table(prop_posi, "right") and self.check_contact(prop_name, "right_table"))) and \
                         np.linalg.norm(prop_posi - self.mj_model.site("site_round2_target").pos) < 0.1:
                         self.taskInfos[round_str].scoring["c"] = True
-                        self.taskInfos[round_str].scoring_time["c"] = self.mj_data.time
-                        print(f">>> {round_str} scoring : 'c' done at {self.mj_data.time}s\n")
+                        self.taskInfos[round_str].scoring_time["c"] = self.mj_data.time - self.first_recv_cmd_time
+                        print(f">>> {round_str} scoring : 'c' done at {self.mj_data.time - self.first_recv_cmd_time}s\n")
 
         elif self.round_id == 3:
             if not self.taskInfos[round_str].scoring["a"] and not box_within_cabinet(box_posi):
                 if (self.check_contact(box_name, "lft_finger_right_link") or self.check_contact(box_name, "lft_finger_left_link")) and \
                     (self.check_contact(box_name, "rgt_finger_right_link") or self.check_contact(box_name, "rgt_finger_left_link")):
                     self.taskInfos[round_str].scoring["a"] = True
-                    self.taskInfos[round_str].scoring_time["a"] = self.mj_data.time
-                    print(f">>> {round_str} scoring : 'a' done at {self.mj_data.time}s\n")
+                    self.taskInfos[round_str].scoring_time["a"] = self.mj_data.time - self.first_recv_cmd_time
+                    print(f">>> {round_str} scoring : 'a' done at {self.mj_data.time - self.first_recv_cmd_time}s\n")
 
             if not self.taskInfos[round_str].scoring["b"]:
                 if prop_in_gripper(self.mj_data.body("lft_finger_left_link").xpos, self.mj_data.body("lft_finger_right_link").xpos, prop_posi, self.taskInfos[round_str].target_prop_type) \
@@ -355,8 +391,8 @@ class S2RNode(MMK2ROS2):
                     if (self.check_contact(prop_name, "lft_finger_right_link") and self.check_contact(prop_name, "lft_finger_left_link")) \
                         or (self.check_contact(prop_name, "rgt_finger_right_link") and self.check_contact(prop_name, "rgt_finger_left_link")):
                         self.taskInfos[round_str].scoring["b"] = True
-                        self.taskInfos[round_str].scoring_time["b"] = self.mj_data.time
-                        print(f">>> {round_str} scoring : 'b' done at {self.mj_data.time}s\n")
+                        self.taskInfos[round_str].scoring_time["b"] = self.mj_data.time - self.first_recv_cmd_time
+                        print(f">>> {round_str} scoring : 'b' done at {self.mj_data.time - self.first_recv_cmd_time}s\n")
 
             if not self.taskInfos[round_str].scoring["c"] and self.taskInfos[round_str].scoring["a"] and self.taskInfos[round_str].scoring["b"]:
                 if (not self.check_contact(prop_name, "lft_finger_right_link")) and (not self.check_contact(prop_name, "lft_finger_left_link")) and \
@@ -365,22 +401,22 @@ class S2RNode(MMK2ROS2):
                         (prop_within_table(prop_posi, "right") and self.check_contact(prop_name, "right_table"))) and \
                         np.linalg.norm(prop_posi - self.mj_model.site("site_round3_target").pos) < 0.1:
                         self.taskInfos[round_str].scoring["c"] = True
-                        self.taskInfos[round_str].scoring_time["c"] = self.mj_data.time
-                        print(f">>> {round_str} scoring : 'c' done at {self.mj_data.time}s\n")
+                        self.taskInfos[round_str].scoring_time["c"] = self.mj_data.time - self.first_recv_cmd_time
+                        print(f">>> {round_str} scoring : 'c' done at {self.mj_data.time - self.first_recv_cmd_time}s\n")
             
             if not self.taskInfos[round_str].scoring["d"]:
                 if (self.taskInfos[round_str].drawer_layer == "top" and self.mj_data.qpos[self.mj_model.joint("jcb_door").qposadr[0]] > np.pi/4.) or \
                     (self.taskInfos[round_str].drawer_layer == "bottom" and self.mj_data.qpos[self.mj_model.joint("jcb_drawer").qposadr[0]] > 0.05):
                     self.taskInfos[round_str].scoring["d"] = True
-                    self.taskInfos[round_str].scoring_time["d"] = self.mj_data.time
-                    print(f">>> {round_str} scoring : 'd' done at {self.mj_data.time}s\n")
+                    self.taskInfos[round_str].scoring_time["d"] = self.mj_data.time - self.first_recv_cmd_time
+                    print(f">>> {round_str} scoring : 'd' done at {self.mj_data.time - self.first_recv_cmd_time}s\n")
 
         else:
             raise ValueError(f"Invalid round_id : {self.round_id}")
 
     def checkTerminated(self):
-        if self.mj_data.time > 5 * 60.:
-            # Time is up
+        if (self.first_recv_cmd_time < 0. and self.mj_data.time > 60.) or (self.mj_data.time - self.first_recv_cmd_time > 5 * 60.):
+            # Time is up: when 1. no command received within 60s or 2. game time since first command received is over 5 minutes
             return True
         mission_done = self.taskInfos[f"round{self.round_id}"].check_mission_done(self.round_id)
         if mission_done:
@@ -403,6 +439,7 @@ class S2RNode(MMK2ROS2):
             game_info_msg.data = str({
                 "scoring" : tinfo.scoring,
                 "scoring_time" : tinfo.scoring_time,
+                "first_recv_cmd_time" : self.first_recv_cmd_time,
             })
             self.task_info_puber.publish(task_info_msg)
             self.game_info_puber.publish(game_info_msg)
