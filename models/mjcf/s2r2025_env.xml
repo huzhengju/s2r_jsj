@@ -58,7 +58,7 @@
     </body>
     <body name="disk_01" pos="0.25 1.275 0.547" quat="0.5 0.5 -0.5 0.5">
       <joint type="free" frictionloss="0.001" />
-      <inertial pos="0 0 0" mass="0.01" diaginertia="0.00002 0.00002 0.00002" />
+      <inertial pos="-0.05 0 0" mass="0.01" diaginertia="0.00002 0.00002 0.00002" />
       <geom mesh="disk" pos="0 0 -0.0045" material="disk_texture_01" class="obj_visual"/>
       <geom size="0.055 0.0025" type="cylinder" rgba="0.0 0.5 0.5 0" condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001"/>
     </body>
