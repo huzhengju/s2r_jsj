@@ -36,7 +36,7 @@ cfg.obj_list = [
     "disk_02"    , "sheet_02"    ,
     "apple"      , "book"        , "cup"           ,
     "kettle"     , "scissors"    , "timeclock"     ,
-    "wood"       , "xbox"        , "yellow_bowl"   ,
+    "plate"      , "xbox"        , "yellow_bowl"   ,
     "toy_cabinet", "cabinet_door", "cabinet_drawer",
 ]
 
@@ -55,7 +55,7 @@ cfg.gs_model_dict["cup"]            = "s2r2025/cup.ply"
 cfg.gs_model_dict["kettle"]         = "s2r2025/kettle.ply"
 cfg.gs_model_dict["scissors"]       = "s2r2025/scissors.ply"
 cfg.gs_model_dict["timeclock"]      = "s2r2025/timeclock.ply"
-cfg.gs_model_dict["wood"]           = "s2r2025/wood.ply"
+cfg.gs_model_dict["plate"]          = "s2r2025/plate.ply"
 cfg.gs_model_dict["xbox"]           = "s2r2025/xbox.ply"
 cfg.gs_model_dict["yellow_bowl"]    = "s2r2025/yellow_bowl.ply"
 cfg.gs_model_dict["toy_cabinet"]    = "s2r2025/toy_cabinet.ply"
@@ -69,7 +69,7 @@ cfg.use_gaussian_renderer = True
 class S2RNode(MMK2ROS2):
     gadgets_names = [
         "apple"     , "book" , "cup"  , "kettle"      , "scissors",
-        "timeclock" , "wood" , "xbox" , "yellow_bowl" , "toy_cabinet"
+        "timeclock" , "plate" , "xbox" , "yellow_bowl" , "toy_cabinet"
     ]
     box_names = ["box_carton", "box_disk", "box_sheet"]
     props_names = ["carton_01", "disk_01", "sheet_01", "disk_02", "sheet_02"]

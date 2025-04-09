@@ -129,11 +129,11 @@
       <geom pos="0 0 0.002" size="0.02 0.02 0.002" type="box" rgba="0 0 0 1"/>
     </body>
 
-    <body name="wood" pos="-0.6 -0.7 0.75" quat="1 0 0 0">
+    <body name="plate" pos="-0.6 -0.7 0.75" quat="1 0 0 0">
       <joint type="free" frictionloss="0.000001" />
       <inertial pos="0 0 0" mass="0.005" diaginertia="0.00002 0.00002 0.00002" />
-      <geom mesh="wood" material="wood_texture" class="obj_visual"/>
-      <geom mesh="wood" class="obj_collision"/>
+      <geom mesh="plate" material="plate_texture" class="obj_visual"/>
+      <geom mesh="plate" class="obj_collision"/>
       <geom pos="0 0 0.0025" size="0.11 0.07 0.0025" type="box" rgba="0 0 0 1"/>
     </body>
 
@@ -160,7 +160,7 @@
 
     <!-- OPs: static scene -->
     <body name="left_table" pos="0.205 -0.85 0">
-      <geom size="0.4 0.8 0.01" pos="0 0 0.74" euler="0 0 1.5708" type="box" condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" rgba="1 1 1 1"/>
+      <geom size="0.4 0.8 0.01" pos="0 0 0.74" euler="0 0 1.5708" type="box" condim="4" solimp="3 0.01 0.01" solref="0.1 0.01" friction="1 0.005 0.0001" rgba="1 1 1 1"/>
       <geom size="0.02 0.02 0.37" pos=" 0.75  0.35 0.37" type="box" contype="0" conaffinity="0" rgba="0.15 0.15 0.15 1" />
       <geom size="0.02 0.02 0.37" pos=" 0.75 -0.35 0.37" type="box" contype="0" conaffinity="0" rgba="0.15 0.15 0.15 1" />
       <geom size="0.02 0.02 0.37" pos="-0.75  0.35 0.37" type="box" contype="0" conaffinity="0" rgba="0.15 0.15 0.15 1" />
@@ -168,7 +168,7 @@
     </body>
 
     <body name="right_table" pos="-1 -0.45 0" euler="0 0 -1.5708">
-      <geom size="0.4 0.8 0.01" pos="0 0 0.74" euler="0 0 1.5708" type="box" condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" rgba="1 1 1 1"/>
+      <geom size="0.4 0.8 0.01" pos="0 0 0.74" euler="0 0 1.5708" type="box" condim="4" solimp="3 0.01 0.01" solref="0.1 0.01" friction="1 0.005 0.0001" rgba="1 1 1 1"/>
       <geom size="0.02 0.02 0.37" pos=" 0.75  0.35 0.37" type="box" contype="0" conaffinity="0" rgba="0.15 0.15 0.15 1" />
       <geom size="0.02 0.02 0.37" pos=" 0.75 -0.35 0.37" type="box" contype="0" conaffinity="0" rgba="0.15 0.15 0.15 1" />
       <geom size="0.02 0.02 0.37" pos="-0.75  0.35 0.37" type="box" contype="0" conaffinity="0" rgba="0.15 0.15 0.15 1" />

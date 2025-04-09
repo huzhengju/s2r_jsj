@@ -119,10 +119,10 @@
     <texture type="2d" name="timeclock_texture" file="s2r2025/timeclock/timeclock.png"/>
     <material name="timeclock_texture" texture="timeclock_texture" specular="0.5" shininess="0.5"/>
 
-    <!-- wood -->
-    <mesh file="s2r2025/wood/wood.obj"/>
-    <texture type="2d" name="wood_texture" file="s2r2025/wood/wood.png"/>
-    <material name="wood_texture" texture="wood_texture" specular="0.5" shininess="0.5"/>
+    <!-- plate -->
+    <mesh file="s2r2025/plate/plate.obj"/>
+    <texture type="2d" name="plate_texture" file="s2r2025/plate/plate.png"/>
+    <material name="plate_texture" texture="plate_texture" specular="0.5" shininess="0.5"/>
 
     <!-- XBOX -->
     <mesh file="s2r2025/xbox/xbox.obj"/>
