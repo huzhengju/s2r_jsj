@@ -89,11 +89,11 @@ class Ros2JoyCtl(Node):
         self.rgt_end_euler = np.zeros(3)
 
         # command publisher
-        self.cmd_vel_puber = self.create_publisher(Twist, '/mmk2/cmd_vel', 5)
-        self.spine_cmd_puber = self.create_publisher(Float64MultiArray, '/mmk2/spine_forward_position_controller/commands', 5)
-        self.head_cmd_puber = self.create_publisher(Float64MultiArray, '/mmk2/head_forward_position_controller/commands', 5)
-        self.left_arm_cmd_puber = self.create_publisher(Float64MultiArray, '/mmk2/left_arm_forward_position_controller/commands', 5)
-        self.right_arm_cmd_puber = self.create_publisher(Float64MultiArray, '/mmk2/right_arm_forward_position_controller/commands', 5)
+        self.cmd_vel_puber = self.create_publisher(Twist, '/cmd_vel', 5)
+        self.spine_cmd_puber = self.create_publisher(Float64MultiArray, '/spine_forward_position_controller/commands', 5)
+        self.head_cmd_puber = self.create_publisher(Float64MultiArray, '/head_forward_position_controller/commands', 5)
+        self.left_arm_cmd_puber = self.create_publisher(Float64MultiArray, '/left_arm_forward_position_controller/commands', 5)
+        self.right_arm_cmd_puber = self.create_publisher(Float64MultiArray, '/right_arm_forward_position_controller/commands', 5)
 
         # joy subscriber
         self.teleop = JoyTeleopRos2()

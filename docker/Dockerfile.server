@@ -65,6 +65,10 @@ RUN apt-get remove -y python3-sympy python3-kiwisolver && \
     PyGlm \
     -i https://pypi.mirrors.ustc.edu.cn/simple --break-system-packages
 
+RUN export distribution=$(. /etc/os-release;echo $ID$VERSION_ID | sed -e 's/\.//g') && export arch=$(uname -m) \
+    && wget https://developer.download.nvidia.com/compute/cuda/repos/$distribution/$arch/cuda-keyring_1.1-1_all.deb \
+    && dpkg -i cuda-keyring_1.1-1_all.deb && apt update && apt install nvidia-cuda-toolkit -y
+
 # Install diff-gaussian-rasterization
 WORKDIR /workspace/DISCOVERSE/submodules/diff-gaussian-rasterization
 RUN pip install . --break-system-packages -i https://pypi.mirrors.ustc.edu.cn/simple && \
