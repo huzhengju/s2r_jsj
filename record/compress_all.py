@@ -6,10 +6,10 @@ if __name__ == "__main__":
     py_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "video_compressor.py")
 
     img_topic_list = [
-        # "/mmk2/head_camera/aligned_depth_to_color/image_raw", 
-        "/mmk2/head_camera/color/image_raw", 
-        "/mmk2/left_camera/color/image_raw", 
-        "/mmk2/right_camera/color/image_raw", 
+        # "/head_camera/aligned_depth_to_color/image_raw", 
+        "/head_camera/color/image_raw", 
+        "/left_camera/color/image_raw", 
+        "/right_camera/color/image_raw", 
     ]
 
     def do_something(topic_name):

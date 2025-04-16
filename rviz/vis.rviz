@@ -101,7 +101,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /mmk2/lidar_s2
+        Value: /lidar_s2
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -117,7 +117,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /mmk2/head_camera/color/image_raw
+        Value: /head_camera/color/image_raw
       Value: true
     - Class: rviz_default_plugins/Image
       Enabled: true
@@ -131,7 +131,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /mmk2/head_camera/aligned_depth_to_color/image_raw
+        Value: /head_camera/aligned_depth_to_color/image_raw
       Value: true
   Enabled: true
   Global Options:

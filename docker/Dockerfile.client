@@ -1,12 +1,11 @@
-# Use NVIDIA CUDA base image
-FROM nvidia/cuda:11.8.0-devel-ubuntu22.04
+# Use ROS2 Jazzy image
+FROM osrf/ros:jazzy-desktop-full
 
 # 设置环境变量
 ENV DEBIAN_FRONTEND=noninteractive
 
 # 安装基本系统依赖
-RUN sed -i 's/archive.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list && \
- sed -i 's/security.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list && \
+RUN sed -i "s http://.*archive.ubuntu.com http://repo.huaweicloud.com g" /etc/apt/sources.list.d/ubuntu.sources && sed -i "s http://.*security.ubuntu.com http://repo.huaweicloud.com g" /etc/apt/sources.list.d/ubuntu.sources && \
  apt-get update && apt-get install -y \
  curl \
  gnupg2 \
@@ -15,24 +14,12 @@ RUN sed -i 's/archive.ubuntu.com/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/source
  python3-dev \
  && rm -rf /var/lib/apt/lists/*
 
-# 添加ROS 2 apt源
-RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
- echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://mirrors.tuna.tsinghua.edu.cn/ros2/ubuntu jammy main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
-
-# 安装ROS 2 Humble
-RUN apt-get update && \
- apt-get install -y --fix-missing \
- ros-humble-desktop \
- ros-dev-tools \
- python3-colcon-common-extensions \
- && rm -rf /var/lib/apt/lists/*
-
 # 设置ROS环境
-RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
+RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc
 
 # 安装Python依赖
 RUN python3 -m pip install --no-cache-dir \
- numpy \
+ numpy --break-system-packages \
  -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # 创建版本检查脚本
@@ -41,7 +28,7 @@ echo "=== System Environment Check ==="\n\
 echo "Python Version:"\n\
 python3 --version\n\
 echo -e "\\n=== ROS 2 Version Check ==="\n\
-source /opt/ros/humble/setup.bash\n\
+source /opt/ros/jazzy/setup.bash\n\
 ros2 --version\n\
 echo -e "\\n=== Python Package Version Check ==="\n\
 python3 -c "import numpy; print(f'\''Numpy Version: {numpy.__version__}'\'')"\n\

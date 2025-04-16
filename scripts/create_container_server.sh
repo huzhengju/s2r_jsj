@@ -12,7 +12,7 @@ docker run -id --name s2r2025_server --gpus all \
     -e NVIDIA_DRIVER_CAPABILITIES=all \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -v /dev/input:/dev/input \
-    discoverse/s2r2025_server:v1.0 bash
+    discoverse/s2r2025_server:real_v0 bash
 
 xhost +
 
