@@ -65,6 +65,7 @@ cfg.gs_model_dict["cabinet_drawer"] = "s2r2025/cabinet_drawer.ply"
 cfg.obs_rgb_cam_id = [0,1,2]
 cfg.obs_depth_cam_id = [0]
 cfg.use_gaussian_renderer = True
+cfg.lidar_s2_sim = True
 
 class S2RNode(MMK2ROS2):
     gadgets_names = [
@@ -278,8 +279,8 @@ class S2RNode(MMK2ROS2):
         return ret
 
     def on_key(self, window, key, scancode, action, mods):
-        if key == glfw.KEY_R:
-            key = glfw.KEY_UNKNOWN
+        # if key == glfw.KEY_R:
+        #     key = glfw.KEY_UNKNOWN
         super().on_key(window, key, scancode, action, mods)
         if action == glfw.PRESS:
             if key == glfw.KEY_C:
@@ -312,8 +313,8 @@ class S2RNode(MMK2ROS2):
         return False
 
     def post_physics_step(self):
-        self.free_camera.distance = min(self.free_camera.distance, 2.)
-        self.free_camera.lookat[:] = np.clip(self.free_camera.lookat[:], np.array([-2.,-2.,0.]), np.array([2.,2.,2.]))
+        # self.free_camera.distance = min(self.free_camera.distance, 2.)
+        # self.free_camera.lookat[:] = np.clip(self.free_camera.lookat[:], np.array([-2.,-2.,0.]), np.array([2.,2.,2.]))
 
         round_str = f"round{self.round_id}"
 
@@ -415,9 +416,9 @@ class S2RNode(MMK2ROS2):
             raise ValueError(f"Invalid round_id : {self.round_id}")
 
     def checkTerminated(self):
-        if (self.first_recv_cmd_time < 0. and self.mj_data.time > 60.) or (self.mj_data.time - self.first_recv_cmd_time > 5 * 60.):
-            # Time is up: when 1. no command received within 60s or 2. game time since first command received is over 5 minutes
-            return True
+        # if (self.first_recv_cmd_time < 0. and self.mj_data.time > 60.) or (self.mj_data.time - self.first_recv_cmd_time > 5 * 60.):
+        #     # Time is up: when 1. no command received within 60s or 2. game time since first command received is over 5 minutes
+        #     return True
         mission_done = self.taskInfos[f"round{self.round_id}"].check_mission_done(self.round_id)
         if mission_done:
             pass
@@ -511,6 +512,9 @@ if __name__ == "__main__":
     spin_thread = threading.Thread(target=lambda:rclpy.spin(sim_node))
     spin_thread.start()
 
+    publidar_thread = threading.Thread(target=sim_node.thread_publidartopic, args=(12,))
+    publidar_thread.start()
+
     pubtopic_thread = threading.Thread(target=sim_node.thread_pubros2topic, args=(24,))
     pubtopic_thread.start()
 
@@ -529,6 +533,7 @@ if __name__ == "__main__":
         pass
 
     finally:
+        publidar_thread.join()
         pubtopic_thread.join()
         pubgameinfo_thread.join()
         sim_node.destroy_node()
