@@ -53,7 +53,7 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        mmk2_base:
+        base_link:
           Value: true
         mmk2_lidar_s2:
           Value: true
@@ -66,7 +66,7 @@ Visualization Manager:
       Show Names: false
       Tree:
         odom:
-          mmk2_base:
+          base_link:
             mmk2_lidar_s2:
               {}
       Update Interval: 0
