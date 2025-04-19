@@ -1,6 +1,7 @@
-#!/usr/bin/env python3
+import os
 import cv2
 import numpy as np
+
 import rclpy
 from rclpy.node import Node
 from cv_bridge import CvBridge
@@ -45,6 +46,11 @@ class DepthVisualizer(Node):
         self.mouse_x = 0
         self.mouse_y = 0
         self.depth_value = 0
+
+        self.save_img_cnt = 0
+        self.save_img_path = os.path.join(os.path.dirname(__file__), 'images_saved')
+        if not os.path.exists(self.save_img_path):
+            os.makedirs(self.save_img_path)
         
         # 创建窗口和鼠标回调
         cv2.namedWindow(self.window_name, cv2.WINDOW_GUI_NORMAL)
@@ -132,10 +138,18 @@ class DepthVisualizer(Node):
         # 'r'键重置分割位置
         elif key == ord('r'):
             self.split_position = 0.5
+        # 's'键保存图像
+        elif key == ord('s'):
+            filename = os.path.join(self.save_img_path, f"img_{self.save_img_cnt}.png")
+            cv2.imwrite(filename, self.rgb_image)
+            self.save_img_cnt += 1
+            self.get_logger().info(f'保存图像: {filename}')
 
 def main(args=None):
     rclpy.init(args=args)
     node = DepthVisualizer()
+
+    print("Press 'ESC' to exit, 'r' to reset split position, 's' to save image.")
     
     try:
         rclpy.spin(node)
