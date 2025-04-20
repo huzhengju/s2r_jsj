@@ -194,24 +194,31 @@ class S2RNodeVIS(MMK2ROS2):
             obj_world_pose = tmat_head_camera @ obj_pose_wrt_cam
 
             cid = detection.results[0].hypothesis.class_id
-            if cid == "name":
-                n = cid + "_carton"
-                tmat_trans = np.eye(3)
+            if cid == "airbot":
+                n = "box_carton"
+                rmat_trans = np.eye(3)
+                tmat_world_box = np.eye(4)
+                tmat_world_box[:3,3] = obj_world_pose[:3]
+                tmat_world_box[:3,:3] = tmat_base[:3,:3]
+                tmat_airbot_box = np.eye(4)
+                tmat_airbot_box[:3,3] = [0.1, 0.0, -0.093]
+                tmat_world_box = tmat_world_box @ tmat_airbot_box
+                obj_world_pose[:] = tmat_world_box[:,3]
             elif cid == "carton":
                 n = cid + "_01"
-                tmat_trans = np.eye(3)
+                rmat_trans = np.eye(3)
             elif cid == "disk":
                 n = cid + "_01"
-                tmat_trans = Rotation.from_euler('y', -np.pi/2.).as_matrix()
+                rmat_trans = Rotation.from_euler('y', -np.pi/2.).as_matrix()
             elif cid == "sheet":
                 n = cid + "_01"
-                tmat_trans = Rotation.from_euler('y', -np.pi/2.).as_matrix()
+                rmat_trans = Rotation.from_euler('y', -np.pi/2.).as_matrix()
             else:
                 continue
 
             qadr = self.mj_model.jnt_qposadr[np.where(self.mj_model.jnt_bodyid == self.mj_data.body(n).id)[0]][0]
             self.mj_data.qpos[qadr:qadr+3] = obj_world_pose[:3]
-            self.mj_data.qpos[qadr+3:qadr+7] = Rotation.from_matrix(tmat_base[:3,:3] @ tmat_trans).as_quat()[[3,0,1,2]]
+            self.mj_data.qpos[qadr+3:qadr+7] = Rotation.from_matrix(tmat_base[:3,:3] @ rmat_trans).as_quat()[[3,0,1,2]]
 
     def update_display(self):
         self.update_robot_state()
