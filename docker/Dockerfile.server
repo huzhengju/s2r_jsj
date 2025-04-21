@@ -42,6 +42,8 @@ RUN apt-get install -y \
     libglm-dev \
     pkg-config \
     ninja-build \
+    apt-utils \
+    ros-jazzy-rmw-zenoh-cpp \
     && rm -rf /var/lib/apt/lists/*
 
 # 设置ROS环境

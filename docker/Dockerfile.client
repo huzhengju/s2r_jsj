@@ -12,6 +12,8 @@ RUN sed -i "s http://.*archive.ubuntu.com http://repo.huaweicloud.com g" /etc/ap
  lsb-release \
  python3-pip \
  python3-dev \
+ apt-utils \
+ ros-jazzy-rmw-zenoh-cpp \
  && rm -rf /var/lib/apt/lists/*
 
 # 设置ROS环境
