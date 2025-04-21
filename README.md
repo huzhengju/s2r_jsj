@@ -71,6 +71,7 @@ cd SIM2REAL-2025/scripts
 bash exec_server.sh
 cd /workspace/SIM2REAL-2025/s2r2025
 python3 s2r_server.py --round_id 1 --random_seed 99
+# 注意：实际比赛时的random_seed 是随机的， 选手需要考虑各种情况
 
 # 使用yolo baseline
 (new terminal)
