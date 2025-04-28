@@ -5,6 +5,7 @@
 ## Update
 
 - [2025.4.21] 重要更新：real 阶段发布
+- [2025.4.28] add act baseline
 
 ## Real阶段
 
@@ -39,7 +40,7 @@
 # 拉取server镜像
 docker pull discoverse/s2r2025_server:real_v0
 # 拉取client镜像
-docker pull discoverse/s2r2025_client:real_v0
+docker pull discoverse/s2r2025_client:real_v1
 ```
 
 #### 创建容器
@@ -79,6 +80,13 @@ cd SIM2REAL-2025/scripts
 bash exec_client.sh
 cd /workspace/s2r2025_baseline_yolo
 python3 baseline_round1_seed99.py --verbose 
+# 如果报错，去掉--verbose
 # 去掉--verbose可隐藏可视化窗口
 # 注意 选手提交自己的镜像时，推荐把可视化窗口关闭，减小因为显示而报错的概率
+
+# 使用act baseline
+cd /workspace/s2r2025_baseline_act
+python3 run.py
+
+# tutorial在/workspace/s2r2025_baseline_yolo/tutorial.md 和 /workspace/s2r2025_baseline_act/tutorial.md
 ```
