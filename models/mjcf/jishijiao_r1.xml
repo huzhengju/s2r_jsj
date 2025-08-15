@@ -50,7 +50,7 @@
 <include file="mmk2/mmk2.xml"/>
 </body>
 <!--  table  -->
-<body name="table" pos="1.15 -0.4 0" euler="0 0 0">
+<body name="table" pos="1.08 -0.68 0" euler="0 0 0">
   <geom size="0.4 0.8 0.01" pos="0 0 0.74" euler="0 0 0" type="box" contype="0" conaffinity="0" rgba="1 1 1 1"/>
   <geom size="0.4 0.8 0.05" pos="0 0 0.7" euler="0 0 0" type="box" rgba="1 0 0 1" group="4"/>
   <geom size="0.02 0.02 0.37" pos="0.35 0.75 0.37" type="box" rgba="0.15 0.15 0.15 1" />
@@ -59,74 +59,71 @@
   <geom size="0.02 0.02 0.37" pos="-0.35 -0.75 0.37" type="box" rgba="0.15 0.15 0.15 1" />
 </body>
 
-  <body name="front_wall" pos="1.55 0.1 0">
-      <geom size="1.0 0.44 0.015" pos="0  1.0  1.0" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
-      <geom size="1.0 0.44 0.015" pos="0 -0.05 1.0" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
-      <geom size="1.0 0.44 0.015" pos="0 -0.95  1.0" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
+<!-- 前墙 -->
+<body name="front_wall" pos="1.50 0 0" euler="0 0 -1.5708">
+    <geom size="1.25 0.015 1.475" pos="0 0 1.0" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
+</body>
+
+<!-- 后墙 -->
+<body name="back_wall" pos="-1.50 0 0" euler="0 0 -1.5708">
+    <geom size="1.25 0.015 1.475" pos="0 0 1.0" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
+</body>
+
+<!-- 左墙 -->
+<body name="left_wall" pos="0 1.50 0" euler="0 0 0">
+    <geom size="1.25 0.015 1.475" pos="0 0 1.0" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
+</body>
+
+<!-- 右墙 -->
+<body name="right_wall" pos="0 -1.50 0" euler="0 0 0">
+    <geom size="1.25 0.015 1.475" pos="0 0 1.0" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
+</body>
+
+<!-- 柜子 -->
+    <body name="cabinet" pos="-0.8 1.33 0" euler="0 0 1.5708">
+
+    <body pos="0.127 -0.15 1.53">
+      <geom type="cylinder" euler="0 -1.5708 0" size="0.018 0.001" rgba="0 0.7 0.9 1"/>
+      <geom type="cylinder" euler="0 -1.5708 0" size="0.015 0.001" pos="0.0002 0 0" rgba="1 1 1 0.8"/>
+      <geom type="cylinder" euler="0 -1.5708 0" size="0.015 0.001" pos="-0.0002 0 0" rgba="1 1 1 0.8"/>
     </body>
 
-    <body name="left_wall" pos="0 1.55 0" euler="0 0 -1.5708">
-      <geom size="1.0 0.44 0.015" pos="0  1.1  1.0" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
-      <geom size="1.0 0.44 0.015" pos="0 -0.09 1.0" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
-      <geom size="1.0 0.44 0.015" pos="0 -0.99 1.0" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
+    <body pos="0.127 0.15 1.53">
+      <geom type="cylinder" euler="0 -1.5708 0" size="0.018 0.001" rgba="0 0.7 0.9 1"/>
+      <geom type="cylinder" euler="0 -1.5708 0" size="0.015 0.001" pos="0.0002 0 0" rgba="1 1 1 0.8"/>
+      <geom type="cylinder" euler="0 -1.5708 0" size="0.015 0.001" pos="-0.0002 0 0" rgba="1 1 1 0.8"/>
     </body>
 
-    <body name="back_wall" pos="-1.45 0.16 0">
-      <geom size="0.2 0.44 0.015" pos="0  0.0 0.2" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
-      <geom size="0.2 0.46 0.015" pos="0  0.92 0.2" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
-      <geom size="0.2 0.49 0.015" pos="0 -0.955 0.2" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
-    </body>
+    <geom size="0.15 0.01 1.015" pos="0  0.4 1.015"   type="box" rgba="0.9 0.9 0.9 1" />
+    <geom size="0.15 0.01 1.015" pos="0 -0.4 1.015"   type="box" rgba="0.9 0.9 0.9 1" />
+    <geom size="0.01 0.40 1.015" pos="0.14 0.0 1.015" type="box" rgba="0.9 0.9 0.9 1" />
 
-    <body name="right_wall" pos="0.05 -1.3 0" euler="0 0 -1.5708">
-      <geom size="0.2 0.49 0.015" pos="0  1. 0.2" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
-      <geom size="0.2 0.49 0.015" pos="0  0. 0.2" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
-      <geom size="0.2 0.49 0.015" pos="0 -1. 0.2" euler="0 1.5708 0" type="box" rgba="1 1 1 1"/>
-    </body>
-
-      <body name="cabinet" pos="-0.8 1.37 0" euler="0 0 1.5708">
-
-      <body pos="0.127 -0.15 1.53">
-        <geom type="cylinder" euler="0 -1.5708 0" size="0.018 0.001" rgba="0 0.7 0.9 1"/>
-        <geom type="cylinder" euler="0 -1.5708 0" size="0.015 0.001" pos="0.0002 0 0" rgba="1 1 1 0.8"/>
-        <geom type="cylinder" euler="0 -1.5708 0" size="0.015 0.001" pos="-0.0002 0 0" rgba="1 1 1 0.8"/>
-      </body>
-
-      <body pos="0.127 0.15 1.53">
-        <geom type="cylinder" euler="0 -1.5708 0" size="0.018 0.001" rgba="0 0.7 0.9 1"/>
-        <geom type="cylinder" euler="0 -1.5708 0" size="0.015 0.001" pos="0.0002 0 0" rgba="1 1 1 0.8"/>
-        <geom type="cylinder" euler="0 -1.5708 0" size="0.015 0.001" pos="-0.0002 0 0" rgba="1 1 1 0.8"/>
-      </body>
-
-      <geom size="0.15 0.01 1.015" pos="0  0.4 1.015"   type="box" rgba="0.9 0.9 0.9 1" />
-      <geom size="0.15 0.01 1.015" pos="0 -0.4 1.015"   type="box" rgba="0.9 0.9 0.9 1" />
-      <geom size="0.01 0.40 1.015" pos="0.14 0.0 1.015" type="box" rgba="0.9 0.9 0.9 1" />
-
-      <geom size="0.15 0.4 0.01" pos="0 0 0.09" type="box" rgba="0.9 0.9 0.9 1" />
-      <geom size="0.15 0.4 0.01" pos="0 0 0.41" type="box" rgba="0.9 0.9 0.9 1" />
-      <geom size="0.15 0.4 0.01" pos="0 0 0.73" type="box" rgba="0.9 0.9 0.9 1" />
-      <geom size="0.15 0.4 0.01" pos="0 0 1.05" type="box" rgba="0.9 0.9 0.9 1" />
-      <geom size="0.15 0.4 0.01" pos="0 0 1.37" type="box" rgba="0.9 0.9 0.9 1" />
-      <geom size="0.15 0.4 0.01" pos="0 0 1.69"  type="box" rgba="0.9 0.9 0.9 1" />
-      <geom size="0.15 0.4 0.01" pos="0 0 2.01"  type="box" rgba="0.9 0.9 0.9 1" />
-    </body>
+    <geom size="0.15 0.4 0.01" pos="0 0 0.09" type="box" rgba="0.9 0.9 0.9 1" />
+    <geom size="0.15 0.4 0.01" pos="0 0 0.41" type="box" rgba="0.9 0.9 0.9 1" />
+    <geom size="0.15 0.4 0.01" pos="0 0 0.73" type="box" rgba="0.9 0.9 0.9 1" />
+    <geom size="0.15 0.4 0.01" pos="0 0 1.05" type="box" rgba="0.9 0.9 0.9 1" />
+    <geom size="0.15 0.4 0.01" pos="0 0 1.37" type="box" rgba="0.9 0.9 0.9 1" />
+    <geom size="0.15 0.4 0.01" pos="0 0 1.69"  type="box" rgba="0.9 0.9 0.9 1" />
+    <geom size="0.15 0.4 0.01" pos="0 0 2.01"  type="box" rgba="0.9 0.9 0.9 1" />
+  </body>
 
 
 <!-- 工具箱 -->
-  <body name="toolbox" pos="-0.8 1.48 1.45" quat="0 1 0 0" >
+  <body name="toolbox" pos="-0.8 1.44 1.45" quat="0 1 0 0" >
       <!-- <joint type="free" frictionloss="0.00005" /> -->
       <include file="object/toolbox.xml"/>
       <geom type="cylinder" pos="0 0 0" size="0.1 0.002" quat="-0.707 0.707 0 0" solimp="0.999 0.995 0.001" solref="0.001 1"/>
     </body>
 
   <!-- 工件 -->
-    <body name="brownbox" pos="-0.8 1.37 1.2228054" quat="0.707 0.707 0 0" >
+    <body name="brownbox" pos="-0.8 1.33 1.2228054" quat="0.707 0.707 0 0" >
       <joint type="free" frictionloss="0.00005" />
       <include file="object/brownbox.xml"/>
       <geom type="cylinder" pos="0 0 0" size="0.1 0.002" quat="-0.707 0.707 0 0" solimp="0.999 0.995 0.001" solref="0.001 1"/>
     </body>
 
  
-     <body name="blue" pos="-0.8 1.37 0.8918759999999599" quat="0.707 0.707 0 0" >
+     <body name="blue" pos="-0.8 1.33 0.8918759999999599" quat="0.707 0.707 0 0" >
       <joint type="free" frictionloss="0.00005" />
       <include file="object/blue.xml"/>
       <geom type="cylinder" pos="0 0 0" size="0.1 0.002" quat="-0.707 0.707 0 0" solimp="0.999 0.995 0.001" solref="0.001 1"/>
