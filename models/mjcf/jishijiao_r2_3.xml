@@ -14,13 +14,14 @@
     <material name='groundplane' texture='groundplane' texuniform='true' texrepeat='5 5' reflectance='0.2'/>
   </asset>
 
+
+
 <include file="object/tuopan_dependencies.xml"/>
 <include file="object/whitebox_dependencies.xml"/>
 <include file="object/brownbox_dependencies.xml"/>
 <include file="object/pinkbox_dependencies.xml"/>
 <include file="object/toolbox_dependencies.xml"/>
 <include file="object/blue_dependencies.xml"/>
-<include file="object/drill_dependencies.xml"/>
 
 
 <compiler angle="radian" meshdir="../meshes" texturedir="../textures/"/>
@@ -36,15 +37,13 @@
 </default>
 
 <worldbody>
-
- <light castshadow="false" directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' pos='-1 -1 2.5' dir='1 1 -1'/>
-    <light directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' pos='1 -1 2.5' dir='-1 1 -1'/>
-    <light castshadow="false" directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' pos='0 1 2.5' dir='0 -1 -1'/>
-    <geom name='floor' type='plane' size='0 0 0.01' material='groundplane' pos='0 0 0'/>
-
-    <site name="site_round2_target" pos="-1.0 -0.05 0.75" size="0.005" rgba="0 0 0 1" type="sphere"/>
-    <site name="site_round3_target" pos="-1.0  0.15 0.75" size="0.005" rgba="0 0 0 1" type="sphere"/>
-
+  <light castshadow="false" directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' pos='-1 -1 2.5' dir='1 1 -1'/>
+      <light directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' pos='1 -1 2.5' dir='-1 1 -1'/>
+      <light castshadow="false" directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' pos='0 1 2.5' dir='0 -1 -1'/>
+      <geom name='floor' type='plane' size='0 0 0.01' material='groundplane' pos='0 0 0'/>
+  
+      <site name="site_round2_target" pos="-1.0 -0.05 0.75" size="0.005" rgba="0 0 0 1" type="sphere"/>
+      <site name="site_round3_target" pos="-1.0  0.15 0.75" size="0.005" rgba="0 0 0 1" type="sphere"/>
 <body name="mmk2" pos="0 0 0">
 <joint type="free" frictionloss="0.0001"/>
 <include file="mmk2/mmk2.xml"/>
@@ -61,17 +60,19 @@
   <geom size="0.02 0.02 0.37" pos="0.35 -0.75 0.37" type="box" rgba="0.15 0.15 0.15 1" />
   <geom size="0.02 0.02 0.37" pos="-0.35 -0.75 0.37" type="box" rgba="0.15 0.15 0.15 1" />
 </body>
-<!-- 工具箱 -->
-  <body name="toolbox" pos="0.93 -0.45 0.82"  quat="0 1 0 0" >
+
+<!-- 物料盒 -->
+  <body name="blue" pos="0.93 -0.55 0.75" euler="1.578 -1.578 0 " >
+      <joint type="free" frictionloss="0.00005" />
+      <include file="object/blue.xml"/>
+      <geom type="cylinder" pos="0 0.0005 0" size="0.06 0.002" quat="-0.707 0.8 0 0"/>
+    </body>
+
+<!-- 工具箱-->
+  <body name="toolbox" pos="0.93 -0.70 0.82" quat="0 1 0 0" >
       <!-- <joint type="free" frictionloss="0.00005" /> -->
       <include file="object/toolbox.xml"/>
       <geom type="cylinder" pos="0 0 0" size="0.1 0.002" quat="-0.707 0.707 0 0" solimp="0.999 0.995 0.001" solref="0.001 1"/>
-    </body>
-<!-- 电钻 -->
-  <body name="drill" pos="0.93 -0.85 0.75" euler="1.578 -1.578 0 " >
-      <!-- <joint type="free" frictionloss="0.00005" /> -->
-      <include file="object/drill.xml"/>
-      <geom type="cylinder" pos="0 0.0005 0" size="0.06 0.002" quat="-0.707 0.8 0 0"/>
     </body>
 
 <!-- 墙面 -->
@@ -97,7 +98,7 @@
 
 <!-- 货柜 -->
       <body name="cabinet" pos="-0.8 1.33 0" euler="0 0 1.5708">
-0.93 -0.75 0.75
+
       <body pos="0.127 -0.15 1.53">
         <geom type="cylinder" euler="0 -1.5708 0" size="0.018 0.001" rgba="0 0.7 0.9 1"/>
         <geom type="cylinder" euler="0 -1.5708 0" size="0.015 0.001" pos="0.0002 0 0" rgba="1 1 1 0.8"/>
@@ -124,18 +125,17 @@
     </body>
 
 <!-- 三个棉花包 -->
-  <body name="yellowbox" pos="-0.8 1.4 1.2228054" quat="0 1 0 0" >
+<body name="brownbox" pos="-0.8 1.33 1.2228054" quat="0.707 0.707 0 0" >
+      <joint type="free" frictionloss="0.00005" />
+      <include file="object/brownbox.xml"/>
+      <geom type="cylinder" pos="0 0 0" size="0.1 0.002" quat="-0.707 0.707 0 0" solimp="0.999 0.995 0.001" solref="0.001 1"/>
+    </body>
+  <body name="yellowbox" pos="-0.8 1.4 0.891876" quat="0 1 0 0" >
       <joint type="free" frictionloss="0.00005" />
       <include file="object/whitebox.xml"/>
       <geom type="cylinder" pos="0 0 0" size="0.1 0.002" quat="-0.707 0.707 0 0" solimp="0.999 0.995 0.001" solref="0.001 1"/>
     </body>
 
-    <body name="brownbox" pos="-0.8 1.33 0.891876" quat="0.707 0.707 0 0" >
-      <joint type="free" frictionloss="0.00005" />
-      <include file="object/brownbox.xml"/>
-      <geom type="cylinder" pos="0 0 0" size="0.1 0.002" quat="-0.707 0.707 0 0" solimp="0.999 0.995 0.001" solref="0.001 1"/>
-    </body>
- 
      <body name="pinkbox" pos="-0.8 1.33 0.568601" quat="0.707 0.707 0 0" >
       <joint type="free" frictionloss="0.00005" />
       <include file="object/pinkbox.xml"/>
