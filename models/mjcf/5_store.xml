@@ -1,0 +1,169 @@
+<mujoco model="MJCFScene">
+  <!-- 包含 MMK2 机器人配置 -->
+  <include file="mmk2/mmk2_options.xml"/>
+  <include file="mmk2/mmk2_dependencies.xml"/>
+
+  <!-- 资源路径设置 -->
+  <compiler meshdir="../meshes/" texturedir="../textures/" />
+  
+  <!-- 包含物体依赖 -->
+  <include file="s2r2025_new/plate_white_dependencies.xml"/>
+  <include file="s2r2025_new/whitebox_dependencies.xml"/>
+  <include file="s2r2025_new/toolbox_dependencies.xml"/>
+  <include file="s2r2025_new/blue_dependencies.xml"/>
+  <include file="s2r2025_new/hat_dependencies.xml"/>
+  <include file="s2r2025_new/drill_dependencies.xml"/>
+
+  <visual>
+    <global offwidth="1920" offheight="1080"/>
+    <quality shadowsize="4096" offsamples="4"/>
+    <headlight diffuse='0.6 0.6 0.6' ambient='.3 .3 .3' specular='0 0 0'/>
+    <scale com="0.05" camera="0.06" framelength="0.5" framewidth="0.02" 
+          forcewidth="0.1" contactwidth="0.01" contactheight="0.05"/>
+  </visual>
+
+  <asset>
+    <texture type='2d' name='groundplane' builtin='checker' 
+             mark='edge' rgb1='0.2 0.3 0.4' rgb2='0.1 0.2 0.3' 
+             markrgb='0.8 0.8 0.8' width='300' height='300'/>
+    <material name='groundplane' texture='groundplane' 
+              texuniform='true' texrepeat='5 5' reflectance='0.2'/>
+  </asset>
+
+  <default>
+    <default class="object">
+      <geom solimp="0.99 0.95 0.01" solref="0.01 1" type="mesh"/>
+    </default>
+  </default>
+
+  <worldbody>
+    <light castshadow="false" directional='true' diffuse='.3 .3 .3' 
+           specular='0.3 0.3 0.3' pos='-1 -1 2.5' dir='1 1 -1'/>
+    <light directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' 
+           pos='1 -1 2.5' dir='-1 1 -1'/>
+    <light castshadow="false" directional='true' diffuse='.3 .3 .3' 
+           specular='0.3 0.3 0.3' pos='0 1 2.5' dir='0 -1 -1'/>
+    
+    <geom name='floor' type='plane' size='0 0 0.001' material='groundplane' pos='0 0 0'/>
+    
+    <body name='mmk2' pos="0 0 0.0">
+      <joint type="free" frictionloss="0.0001" />
+      <include file="mmk2/mmk2.xml"/>
+    </body>
+
+    <!-- 11111 -->
+    <!-- <body name="blue" pos="0.1 -1.60047 0.092315" quat="0.492386 0.505636 0.500052 0.501834" childclass="object">
+      <joint type="free" frictionloss="0.00005"/>
+      <include file="s2r2025_new/blue.xml"/>
+      <geom type="cylinder" pos="0 0.005 0" size="0.05 0.002" quat="-0.707 0.707 0 0"/>
+    </body>
+
+    <body name="whitebox" pos="0.103415 -1.60953 1.07" quat="0.5  0.5 -0.5 -0.5" childclass="object">
+      <joint type="free" frictionloss="0.00005" />
+      <include file="s2r2025_new/whitebox.xml"/>
+      <geom type="cylinder" pos="0 0 0" size="0.1 0.002" quat="-0.707 0.707 0 0" solimp="0.999 0.995 0.001" solref="0.001 1"/>
+    </body>
+    
+    <body name="drill" pos="0.0580176 -1.65665 0.43" quat="0.519871 0.624074 0.398061 0.426395" childclass="object">
+      <joint type="free" frictionloss="0.00005" />
+      <include file="s2r2025_new/drill.xml"/>
+      <geom type="cylinder" pos="0 0.002 0" size="0.05 0.002" quat="-0.707 0.707 0 0"/>
+    </body>
+    
+    <body name="toolbox" pos="0.0816662 -1.66379 1.365" quat="0.668304 0.742876 0.0288485 0.0259333" childclass="object">
+      <joint type="free" frictionloss="0.00005"/>
+      <include file="s2r2025_new/toolbox.xml"/>
+      <geom type="cylinder" pos="0 0.0005 0" size="0.06 0.002" quat="-0.707 0.8 0 0"/>
+    </body>
+    
+    <body name="hat" pos="0.125987 -1.60466 0.742484" quat="-0.134248 -0.123952 -0.672913 -0.716799" childclass="object">
+      <joint type="free" frictionloss="0.00005" />
+      <include file="s2r2025_new/hat.xml"/>
+      <geom type="cylinder" pos="0 0.005 0" size="0.05 0.002" quat="-0.707 0.707 0 0"/>
+    </body> -->
+
+    <!-- 22222 -->
+    <!-- <body name="blue" pos="0.1 -1.60047 0.092315" quat="0.492386 0.505636 0.500052 0.501834" childclass="object">
+      <joint type="free" frictionloss="0.00005"/>
+      <include file="s2r2025_new/blue.xml"/>
+      <geom type="cylinder" pos="0 0.005 0" size="0.05 0.002" quat="-0.707 0.707 0 0"/>
+    </body>
+
+    <body name="whitebox" pos="0.125987 -1.60466 0.742484" quat="0.5  0.5 -0.5 -0.5" childclass="object">
+      <joint type="free" frictionloss="0.00005" />
+      <include file="s2r2025_new/whitebox.xml"/>
+      <geom type="cylinder" pos="0 0 0" size="0.1 0.002" quat="-0.707 0.707 0 0" solimp="0.999 0.995 0.001" solref="0.001 1"/>
+    </body>
+    
+    <body name="drill" pos="0.0580176 -1.65665 0.43" quat="0.519871 0.624074 0.398061 0.426395" childclass="object">
+      <joint type="free" frictionloss="0.00005" />
+      <include file="s2r2025_new/drill.xml"/>
+      <geom type="cylinder" pos="0 0.002 0" size="0.05 0.002" quat="-0.707 0.707 0 0"/>
+    </body>
+    
+    <body name="toolbox" pos="0.0816662 -1.66379 1.365" quat="0.668304 0.742876 0.0288485 0.0259333" childclass="object">
+      <joint type="free" frictionloss="0.00005"/>
+      <include file="s2r2025_new/toolbox.xml"/>
+      <geom type="cylinder" pos="0 0.0005 0" size="0.06 0.002" quat="-0.707 0.8 0 0"/>
+    </body>
+    
+    <body name="hat" pos="0.103415 -1.60953 1.07" quat="-0.134248 -0.123952 -0.672913 -0.716799" childclass="object">
+      <joint type="free" frictionloss="0.00005" />
+      <include file="s2r2025_new/hat.xml"/>
+      <geom type="cylinder" pos="0 0.005 0" size="0.05 0.002" quat="-0.707 0.707 0 0"/>
+    </body> -->
+
+    <!-- 33333 -->
+    <body name="blue" pos="0.1 -1.60047 0.092315" quat="0.492386 0.505636 0.500052 0.501834" childclass="object">
+      <joint type="free" frictionloss="0.00005"/>
+      <include file="s2r2025_new/blue.xml"/>
+      <geom type="cylinder" pos="0 0.005 0" size="0.05 0.002" quat="-0.707 0.707 0 0"/>
+    </body>
+
+    <body name="whitebox" pos="0.0580176 -1.65665 0.43" quat="0.5  0.5 -0.5 -0.5" childclass="object">
+      <joint type="free" frictionloss="0.00005" />
+      <include file="s2r2025_new/whitebox.xml"/>
+      <geom type="cylinder" pos="0 0 0" size="0.1 0.002" quat="-0.707 0.707 0 0" solimp="0.999 0.995 0.001" solref="0.001 1"/>
+    </body>
+    
+    <body name="drill" pos="0.125987 -1.60466 0.742484" quat="0.519871 0.624074 0.398061 0.426395" childclass="object">
+      <joint type="free" frictionloss="0.00005" />
+      <include file="s2r2025_new/drill.xml"/>
+      <geom type="cylinder" pos="0 0.002 0" size="0.05 0.002" quat="-0.707 0.707 0 0"/>
+    </body>
+    
+    <body name="toolbox" pos="0.0816662 -1.66379 1.365" quat="0.668304 0.742876 0.0288485 0.0259333" childclass="object">
+      <joint type="free" frictionloss="0.00005"/>
+      <include file="s2r2025_new/toolbox.xml"/>
+      <geom type="cylinder" pos="0 0.0005 0" size="0.06 0.002" quat="-0.707 0.8 0 0"/>
+    </body>
+    
+    <body name="hat" pos="0.103415 -1.60953 1.07" quat="-0.134248 -0.123952 -0.672913 -0.716799" childclass="object">
+      <joint type="free" frictionloss="0.00005" />
+      <include file="s2r2025_new/hat.xml"/>
+      <geom type="cylinder" pos="0 0.005 0" size="0.05 0.002" quat="-0.707 0.707 0 0"/>
+    </body>
+
+    <geom class="object" name="Box1" type="box" size="0.50000000000000004 0.11 0.01" pos="0.10354727603690797 -1.6533984597895902 0.08582887040554759" rgba="0.800000011920929 0.5 0.20000000298023224 1.0"/>
+    <geom class="object" name="Box1_copy" type="box" size="0.50000001192092896 0.10999999344348907 0.009999999776482582" pos="0.12620092411228853 -1.6533984899520874 0.7352914495143401" rgba="0.800000011920929 0.5 0.20000000298023224 1.0"/>
+    <geom class="object" name="Box1_copy_copy" type="box" size="0.50000001192092896 0.10999999344348907 0.009999999776482582" pos="0.04483229776947773 -1.6533984899520874 0.4219865471124649" rgba="0.800000011920929 0.5 0.20000000298023224 1.0"/>
+    <geom class="object" name="Box1_copy_copy_copy" type="box" size="0.50000001192092896 0.10999999344348907 0.009999999776482582" pos="0.044832296669483185 -1.6533984899520874 1.3554779018169132" rgba="0.800000011920929 0.5 0.20000000298023224 1.0"/>
+    <geom class="object" name="Box1_copy_copy_copy_copy" type="box" size="0.50000001192092896 0.10999999344348907 0.009999999776482582" pos="0.09986287519748172 -1.6533984899520874 1.0558396887779236" rgba="0.800000011920929 0.5 0.20000000298023224 1.0"/>
+  </worldbody>
+
+  <actuator>
+    <include file="mmk2/mmk2_control.xml"/>
+  </actuator>
+
+  <sensor>
+    <include file="mmk2/mmk2_sensor.xml"/>
+  </sensor>
+
+  <keyframe>
+    <key name="pick" qpos="0 0 0 0.707 0 0 -0.707 0 0 0 0 0 -0. -0.166 0.032 0. 1.5708 2.223 0 0 -0. -0.166 0.032 0. -1.5708 -2.223 0 0 1.35 0.25 0.742 1 0 0 0 0.25 1.35 0.422 0.707107 0 0 0.707107 1.35 0.55 1.062 1 0 0 0 1.3 0.25 0.88 1 0 0 0 0.25 1.275 0.547 0.5 0.5 -0.5 0.5" 
+          ctrl="0 0 0 0 0 -0. -0.166 0.032 0. 1.5708 2.223 0 -0. -0.166 0.032 0. -1.5708 -2.223 0"/>
+    
+    <key name="carry" qpos="0 0 0 0.707 0 0 -0.707 0 0 0 0 0 -0. -0.166 0.032 0. 1.5708 0.6522 0 0 -0. -0.166 0.032 0. -1.5708 -0.6522 0 0 1.35 0.25 0.742 1 0 0 0 0.25 1.35 0.422 0.707107 0 0 0.707107 1.35 0.55 1.062 1 0 0 0 1.3 0.25 0.88 1 0 0 0 0.25 1.275 0.547 0.5 0.5 -0.5 0.5" 
+          ctrl="0 0 0 0 0 -0. -0.166 0.032 0. 1.5708 0.6522 0 -0. -0.166 0.032 0. -1.5708 -0.6522 0"/>
+  </keyframe>
+</mujoco>
