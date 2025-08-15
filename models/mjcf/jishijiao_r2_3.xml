@@ -1,4 +1,4 @@
-<mujoco model="jishijiao_r2_1">
+<mujoco model="jishijiao_r2_3">
 <include file="mmk2/mmk2_options.xml"/>
 <include file="mmk2/mmk2_dependencies.xml"/>
 
@@ -41,7 +41,7 @@
       <light directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' pos='1 -1 2.5' dir='-1 1 -1'/>
       <light castshadow="false" directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' pos='0 1 2.5' dir='0 -1 -1'/>
       <geom name='floor' type='plane' size='0 0 0.01' material='groundplane' pos='0 0 0'/>
-  
+
       <site name="site_round2_target" pos="-1.0 -0.05 0.75" size="0.005" rgba="0 0 0 1" type="sphere"/>
       <site name="site_round3_target" pos="-1.0  0.15 0.75" size="0.005" rgba="0 0 0 1" type="sphere"/>
 <body name="mmk2" pos="0 0 0">
@@ -62,14 +62,14 @@
 </body>
 
 <!-- 物料盒 -->
-  <body name="blue" pos="0.93 -0.55 0.75" euler="1.578 -1.578 0 " >
-      <joint type="free" frictionloss="0.00005" />
+  <body name="blue" pos="0.90 -0.48 0.78" euler="1.578 -1.578 0 " >
+      <!-- <joint type="free" frictionloss="0.00005" /> -->
       <include file="object/blue.xml"/>
       <geom type="cylinder" pos="0 0.0005 0" size="0.06 0.002" quat="-0.707 0.8 0 0"/>
     </body>
 
 <!-- 工具箱-->
-  <body name="toolbox" pos="0.93 -0.70 0.82" quat="0 1 0 0" >
+  <body name="toolbox" pos="0.90 -0.63 0.85" quat="0 1 0 0" >
       <!-- <joint type="free" frictionloss="0.00005" /> -->
       <include file="object/toolbox.xml"/>
       <geom type="cylinder" pos="0 0 0" size="0.1 0.002" quat="-0.707 0.707 0 0" solimp="0.999 0.995 0.001" solref="0.001 1"/>
