@@ -128,7 +128,8 @@
       <!-- <geom mesh="timeclock" class="obj_collision"/> -->
       <geom pos="0 0 0.002" size="0.02 0.02 0.002" type="box" group="3" rgba="0 0 0 1"/>
     </body>
-
+43748 -1.69334 0.568601" quat="0.707 0.707 0 0" childclass="object">
+      <joint type="free" frictionl
     <body name="plate" pos="-0.6 -0.7 0.75" quat="1 0 0 0">
       <joint type="free" frictionloss="0.000001" />
       <inertial pos="0 0 0" mass="0.005" diaginertia="0.00002 0.00002 0.00002" />

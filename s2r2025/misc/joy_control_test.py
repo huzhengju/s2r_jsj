@@ -8,7 +8,7 @@ from sensor_msgs.msg import Joy
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float64MultiArray
 
-from discoverse.mmk2 import MMK2FIK
+from discoverse.robots import MMK2FIK
 from discoverse.utils.joy_stick_ros2 import JoyTeleopRos2
 
 class Ros2JoyCtl(Node):

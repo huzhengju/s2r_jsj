@@ -1,0 +1,25 @@
+<mujocoinclude>
+  <asset>
+    <!-- 模拟有污渍、磨损的工厂地面纹理，去掉格子 -->
+    <texture name="factory_ground" type="2d" builtin="flat" rgb1=".2 .2 .2" width="600" height="600"/>
+    <material name="factory_ground" texture="factory_ground" texrepeat="10 10" texuniform="true" reflectance=".1"/>
+  </asset>
+
+  <visual>
+    <global offwidth="1920" offheight="1080"/>
+    <quality shadowsize="4096" offsamples="4"/>
+    <headlight ambient="0.2 0.2 0.2"/>
+    <scale com="0.05" camera="0.06" framelength="0.5" framewidth="0.02" forcewidth="0.005" contactwidth="0.01" contactheight="0.05"/>
+  </visual>
+
+  <worldbody>
+    <!-- 调整光照模拟工厂的照明条件，增加一些较暗的环境光和局部高光 -->
+    <light directional="false" diffuse=".1 .1 .1" specular="0.1 0.1 0.1" pos="0.3 -0.3 3"/>
+    <light directional="false" diffuse=".1 .1 .1" specular="0.1 0.1 0.1" pos="-0.3 0.3 3"/>
+    <light directional="false" diffuse=".1 .1 .1" specular="0.1 0.1 0.1" pos="0.6 0.3 3"/>
+    <light directional="false" diffuse=".1 .1 .1" specular="0.1 0.1 0.1" pos="-0.6 -0.3 3"/>
+    <light directional="true" diffuse=".3 .3 .3" specular="0.3 0.3 0.3" pos="0 0 5" dir="0 0 -1"/>
+
+    <geom name="ground" type="plane" pos="0 0 0" size="5 5 0.1" material="factory_ground" solimp=".9 .95 .001" solref='-10000 -1000'/>
+  </worldbody>
+</mujocoinclude>

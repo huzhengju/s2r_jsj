@@ -1,0 +1,30 @@
+<mujocoinclude>
+  <inertial pos="0 0 0" mass="0.1" diaginertia="2e-05 2e-05 2e-05" />
+  <geom rgba="0.5 0.5 0.5 1" mesh="tuopan" class="obj_visual" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_0" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_1" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_2" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_3" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_4" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_5" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_6" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_7" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_8" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_9" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_10" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_11" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 1" mesh="tuopan_part_12" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_0" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_1" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_2" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_3" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_4" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_5" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_6" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_7" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_8" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_9" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_10" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_11" />
+  <geom type="mesh" rgba="0.5 0.5 0.5 0" mesh="tuopan_part_12" />
+</mujocoinclude>

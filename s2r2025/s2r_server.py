@@ -1,6 +1,12 @@
 import os
-os.environ["DISCOVERSE_ASSERT_DIR"] = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'models')
-os.system("echo $DISCOVERSE_ASSERT_DIR")
+import sys
+
+current_dir = os.path.dirname(os.path.realpath(__file__))
+project_root = os.path.dirname(current_dir)
+models_dir = os.path.join(project_root, "models")
+ply_dir = os.path.join(project_root, "models", "3dgs")
+os.environ["DISCOVERSE_ASSERT_DIR"] = models_dir
+sys.path.insert(0, project_root)
 
 import glfw
 import mujoco
@@ -8,7 +14,7 @@ import argparse
 import threading
 import numpy as np
 from scipy.spatial.transform import Rotation
-from discoverse.envs.mmk2_base import MMK2Cfg
+from discoverse.robots_env.mmk2_base import MMK2Cfg
 from discoverse.examples.ros2.mmk2_ros2 import MMK2ROS2
 from judgement import TaskInfo, s2r2025_position_info, box_within_cabinet, prop_in_gripper, prop_within_table
 
@@ -18,7 +24,7 @@ from geometry_msgs.msg import Twist
 from rosgraph_msgs.msg import Clock
 
 cfg = MMK2Cfg()
-cfg.mjcf_file_path = "mjcf/s2r2025_env.xml"
+cfg.mjcf_file_path = os.path.join(models_dir, "mjcf/s2r2025_env.xml")
 cfg.timestep       = 0.003
 cfg.decimation     = 2
 
@@ -31,6 +37,13 @@ cfg.render_set = {
     "height" : 480
 }
 cfg.obj_list = [
+    "agv_link"   , "slide_link"  , "head_pitch_link", 
+    "head_yaw_link","lft_arm_base","lft_arm_link1",
+    "lft_arm_link2","lft_arm_link3","lft_arm_link4",
+    "lft_arm_link6","lft_finger_left_link","lft_finger_right_link",
+    "rgt_arm_base","rgt_arm_link1",
+    "rgt_arm_link2","rgt_arm_link3","rgt_arm_link4",
+    "rgt_arm_link6","rgt_finger_left_link","rgt_finger_right_link",
     "box_carton" , "box_disk"    , "box_sheet"     ,
     "carton_01"  , "disk_01"     , "sheet_01"      ,
     "disk_02"    , "sheet_02"    ,
@@ -40,27 +53,51 @@ cfg.obj_list = [
     "toy_cabinet", "cabinet_door", "cabinet_drawer",
 ]
 
-cfg.gs_model_dict["background"]     = "scene/s2r2025/point_cloud.ply"
-cfg.gs_model_dict["box_carton"]     = "s2r2025/box.ply"
-cfg.gs_model_dict["box_disk"]       = "s2r2025/box.ply"
-cfg.gs_model_dict["box_sheet"]      = "s2r2025/box.ply"
-cfg.gs_model_dict["carton_01"]      = "s2r2025/carton_01.ply"
-cfg.gs_model_dict["disk_01"]        = "s2r2025/disk_01.ply"
-cfg.gs_model_dict["disk_02"]        = "s2r2025/disk_01.ply"
-cfg.gs_model_dict["sheet_01"]       = "s2r2025/sheet_01.ply"
-cfg.gs_model_dict["sheet_02"]       = "s2r2025/sheet_01.ply"
-cfg.gs_model_dict["apple"]          = "s2r2025/apple.ply"
-cfg.gs_model_dict["book"]           = "s2r2025/book.ply"
-cfg.gs_model_dict["cup"]            = "s2r2025/cup.ply"
-cfg.gs_model_dict["kettle"]         = "s2r2025/kettle.ply"
-cfg.gs_model_dict["scissors"]       = "s2r2025/scissors.ply"
-cfg.gs_model_dict["timeclock"]      = "s2r2025/timeclock.ply"
-cfg.gs_model_dict["plate"]          = "s2r2025/plate.ply"
-cfg.gs_model_dict["xbox"]           = "s2r2025/xbox.ply"
-cfg.gs_model_dict["yellow_bowl"]    = "s2r2025/yellow_bowl.ply"
-cfg.gs_model_dict["toy_cabinet"]    = "s2r2025/toy_cabinet.ply"
-cfg.gs_model_dict["cabinet_door"]   = "s2r2025/cabinet_door.ply"
-cfg.gs_model_dict["cabinet_drawer"] = "s2r2025/cabinet_drawer.ply"
+cfg.gs_model_dict = {
+    "agv_link": os.path.join(ply_dir, "mmk2", "agv_link.ply"),
+    "slide_link": os.path.join(ply_dir, "mmk2", "slide_link.ply"),
+    "head_pitch_link": os.path.join(ply_dir, "mmk2", "head_pitch_link.ply"),
+    "head_yaw_link": os.path.join(ply_dir, "mmk2", "head_yaw_link.ply"),
+    "lft_arm_base": os.path.join(ply_dir, "airbot_play", "arm_base.ply"),
+    "lft_arm_link1": os.path.join(ply_dir, "airbot_play", "link1.ply"),
+    "lft_arm_link2": os.path.join(ply_dir, "airbot_play", "link2.ply"),
+    "lft_arm_link3": os.path.join(ply_dir, "airbot_play", "link3.ply"),
+    "lft_arm_link4": os.path.join(ply_dir, "airbot_play", "link4.ply"),
+    "lft_arm_link5": os.path.join(ply_dir, "airbot_play", "link5.ply"),
+    "lft_arm_link6": os.path.join(ply_dir, "airbot_play", "link6.ply"),
+    "lft_finger_left_link": os.path.join(ply_dir, "airbot_play", "left.ply"),
+    "lft_finger_right_link": os.path.join(ply_dir, "airbot_play", "right.ply"),
+    "rgt_arm_base": os.path.join(ply_dir, "airbot_play", "arm_base.ply"),
+    "rgt_arm_link1": os.path.join(ply_dir, "airbot_play", "link1.ply"),
+    "rgt_arm_link2": os.path.join(ply_dir, "airbot_play", "link2.ply"),
+    "rgt_arm_link3": os.path.join(ply_dir, "airbot_play", "link3.ply"),
+    "rgt_arm_link4": os.path.join(ply_dir, "airbot_play", "link4.ply"),
+    "rgt_arm_link5": os.path.join(ply_dir, "airbot_play", "link5.ply"),
+    "rgt_arm_link6": os.path.join(ply_dir, "airbot_play", "link6.ply"),
+    "rgt_finger_left_link": os.path.join(ply_dir, "airbot_play", "left.ply"),
+    "rgt_finger_right_link": os.path.join(ply_dir, "airbot_play", "right.ply"),
+    "background": os.path.join(ply_dir, "scene", "s2r2025", "point_cloud.ply"),
+    "box_carton": os.path.join(ply_dir, "s2r2025", "box.ply"),
+    "box_disk": os.path.join(ply_dir, "s2r2025", "box.ply"),
+    "box_sheet": os.path.join(ply_dir, "s2r2025", "box.ply"),
+    "carton_01": os.path.join(ply_dir, "s2r2025", "carton_01.ply"),
+    "disk_01": os.path.join(ply_dir, "s2r2025", "disk_01.ply"),
+    "disk_02": os.path.join(ply_dir, "s2r2025", "disk_01.ply"),
+    "sheet_01": os.path.join(ply_dir, "s2r2025", "sheet_01.ply"),
+    "sheet_02": os.path.join(ply_dir, "s2r2025", "sheet_01.ply"),
+    "apple": os.path.join(ply_dir, "s2r2025", "apple.ply"),
+    "book": os.path.join(ply_dir, "s2r2025", "book.ply"),
+    "cup": os.path.join(ply_dir, "s2r2025", "cup.ply"),
+    "kettle": os.path.join(ply_dir, "s2r2025", "kettle.ply"),
+    "scissors": os.path.join(ply_dir, "s2r2025", "scissors.ply"),
+    "timeclock": os.path.join(ply_dir, "s2r2025", "timeclock.ply"),
+    "plate": os.path.join(ply_dir, "s2r2025", "plate.ply"),
+    "xbox": os.path.join(ply_dir, "s2r2025", "xbox.ply"),
+    "yellow_bowl": os.path.join(ply_dir, "s2r2025", "yellow_bowl.ply"),
+    "toy_cabinet": os.path.join(ply_dir, "s2r2025", "toy_cabinet.ply"),
+    "cabinet_door": os.path.join(ply_dir, "s2r2025", "cabinet_door.ply"),
+    "cabinet_drawer": os.path.join(ply_dir, "s2r2025", "cabinet_drawer.ply")
+}
 
 cfg.obs_rgb_cam_id = [0,1,2]
 cfg.obs_depth_cam_id = [0]
