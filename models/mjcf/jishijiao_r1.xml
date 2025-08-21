@@ -26,15 +26,6 @@
 
 <compiler angle="radian" meshdir="../meshes" texturedir="../textures/"/>
 
-<default>
-<default class="obj_visual">
-<geom group="2" type="mesh" contype="0" conaffinity="0"/>
-</default>
-<default class="obj_collision">
-<geom group="3" condim="4" solimp="2 1 0.01" solref="0.01 1" friction="1 0.005 0.0001" type="mesh"/>
-</default>
-
-</default>
 
 <worldbody>
     <light castshadow="false" directional='true' diffuse='.3 .3 .3' specular='0.3 0.3 0.3' pos='-1 -1 2.5' dir='1 1 -1'/>
