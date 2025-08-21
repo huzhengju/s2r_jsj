@@ -21,6 +21,7 @@
 <include file="object/code2_dependencies.xml"/>
 <include file="object/code3_dependencies.xml"/>
 <include file="object/code4_dependencies.xml"/>
+<include file="object/mark_dependencies.xml"/>
 
 <compiler angle="radian" meshdir="../meshes" texturedir="../textures/"/>
 
@@ -50,6 +51,14 @@
 <body name="tuopan" pos="-0.2 0.80 0.75" euler="0 0 0">
       <include file="object/tuopan.xml"/>
     </body>
+
+    <!-- mark-定位格 -->
+<body name="mark" pos="-0.1 0.45 0.75" euler="0 0 1.57">
+  <geom type="mesh" mesh="mark" density="1000"/>
+
+  <joint  frictionloss="0.00005" />
+  <include file="object/mark.xml"/>
+</body>  
 <!-- 左1 -->
 <body name="code1_1" pos="-0.20 0.95 0.75" euler="0 0 1.3">
   <joint type="free" frictionloss="0.005" />

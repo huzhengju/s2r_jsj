@@ -36,10 +36,7 @@
 <joint type="free" frictionloss="0.0001"/>
 <include file="mmk2/mmk2.xml"/>
 </body>
-<!--  table  -->
-<!--
- <body name="table" pos="1.15 -0.4 0" euler="0 0 0"> 
--->
+
 <body name="table" pos="1.08 -0.68 0" euler="0 0 0">
 <geom size="0.4 0.8 0.01" pos="0 0 0.74" euler="0 0 0" type="box" contype="0" conaffinity="0" rgba="1 1 1 1"/>
 <geom size="0.4 0.8 0.05" pos="0 0 0.7" euler="0 0 0" type="box" rgba="1 0 0 1" group="4"/>
@@ -116,6 +113,7 @@
 <include file="object/pinkbox.xml"/>
 <geom type="cylinder" pos="0 0 0" size="0.1 0.002" quat="-0.707 0.707 0 0" solimp="0.999 0.995 0.001" solref="0.001 1"/>
 </body>
+
 </worldbody>
 <actuator>
 <include file="mmk2/mmk2_control.xml"/>
