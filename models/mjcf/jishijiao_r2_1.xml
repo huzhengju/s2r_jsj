@@ -14,7 +14,6 @@
     <material name='groundplane' texture='groundplane' texuniform='true' texrepeat='5 5' reflectance='0.2'/>
   </asset>
 
-<include file="object/tuopan_dependencies.xml"/>
 <include file="object/whitebox_dependencies.xml"/>
 <include file="object/brownbox_dependencies.xml"/>
 <include file="object/pinkbox_dependencies.xml"/>
