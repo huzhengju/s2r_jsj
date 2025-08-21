@@ -1,0 +1,5 @@
+<mujocoinclude>
+  <asset>
+    <mesh name="code4" file="object/code4/code4.obj" />
+  </asset>
+</mujocoinclude>
